@@ -97,6 +97,7 @@ nav ul li a.active {
 /* Menú de usuario */
 #user-menu-container {
     position: relative;
+    margin-left: auto;
 }
 
 #user-menu-button {
@@ -309,6 +310,20 @@ button:disabled {
     background-color: #2a2a4a;
     border-radius: 8px;
     padding: 1rem;
+    width: 100%;
+    height: auto;
+    position: relative;
+    overflow: hidden;
+    background-color: rgba(0, 0, 0, 0.2);
+}
+
+#earth-map-canvas {
+    width: 100%;
+    height: 300px;
+    border: 2px solid #00bcd4;
+    border-radius: 10px;
+    background: #001122;
+    margin-top: 10px;
 }
 
 .asteroid-selection h3,
