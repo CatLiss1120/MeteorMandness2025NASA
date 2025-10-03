@@ -9,23 +9,23 @@ function initEarthVisualization() {
     if (!container) return;
 
     // Crear escena
-    scene = new THREE.Scene();
+    window.scene = new THREE.Scene();
     
     // Crear cámara
-    camera = new THREE.PerspectiveCamera(75, container.clientWidth / container.clientHeight, 0.1, 1000);
-    camera.position.z = 5;
+    window.camera = new THREE.PerspectiveCamera(75, container.clientWidth / container.clientHeight, 0.1, 1000);
+    window.camera.position.z = 5;
     
     // Crear renderizador
-    renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
-    renderer.setSize(container.clientWidth, container.clientHeight);
-    container.appendChild(renderer.domElement);
+    window.renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+    window.renderer.setSize(container.clientWidth, container.clientHeight);
+    container.appendChild(window.renderer.domElement);
     
     // Añadir controles de órbita
-    controls = new THREE.OrbitControls(camera, renderer.domElement);
-    controls.enableDamping = true;
-    controls.dampingFactor = 0.05;
-    controls.minDistance = 3;
-    controls.maxDistance = 50;
+    window.controls = new THREE.OrbitControls(window.camera, window.renderer.domElement);
+    window.controls.enableDamping = true;
+    window.controls.dampingFactor = 0.05;
+    window.controls.minDistance = 3;
+    window.controls.maxDistance = 50;
     
     // Crear la Tierra
     createEarth();
@@ -48,8 +48,8 @@ function createEarth() {
     const geometry = new THREE.SphereGeometry(2, 64, 64);
     const texture = new THREE.TextureLoader().load('https://threejs.org/examples/textures/planets/earth_atmos_2048.jpg');
     const material = new THREE.MeshPhongMaterial({ map: texture, specularMap: new THREE.TextureLoader().load('https://threejs.org/examples/textures/planets/earth_specular.jpg') });
-    earth = new THREE.Mesh(geometry, material);
-    scene.add(earth);
+    window.earth = new THREE.Mesh(geometry, material);
+    window.scene.add(window.earth);
 }
 
 // Crear estrellas de fondo
@@ -64,51 +64,51 @@ function createStars() {
     }
     starsGeometry.setAttribute('position', new THREE.Float32BufferAttribute(starsVertices, 3));
     const starsMaterial = new THREE.PointsMaterial({ color: 0xffffff, size: 0.1 });
-    stars = new THREE.Points(starsGeometry, starsMaterial);
-    scene.add(stars);
+    window.stars = new THREE.Points(starsGeometry, starsMaterial);
+    window.scene.add(window.stars);
 }
 
 // Añadir iluminación a la escena
 function addLights() {
-    scene.add(new THREE.AmbientLight(0x333333));
+    window.scene.add(new THREE.AmbientLight(0x333333));
     const light = new THREE.DirectionalLight(0xffffff, 1);
     light.position.set(5, 3, 5);
-    scene.add(light);
+    window.scene.add(light);
 }
 
 // Manejar el redimensionamiento de la ventana
 function onWindowResize() {
     const container = document.getElementById('earth-canvas');
     if (!container) return;
-    camera.aspect = container.clientWidth / container.clientHeight;
-    camera.updateProjectionMatrix();
-    renderer.setSize(container.clientWidth, container.clientHeight);
+    window.camera.aspect = container.clientWidth / container.clientHeight;
+    window.camera.updateProjectionMatrix();
+    window.renderer.setSize(container.clientWidth, container.clientHeight);
 }
 
 // Alternar entre vista 3D y 2D
 function toggleView() {
     isView3D = !isView3D;
-    controls.enabled = isView3D;
+    window.controls.enabled = isView3D;
     document.getElementById('toggle-view').textContent = isView3D ? 'Vista 2D/3D' : 'Vista Plana';
 }
 
 // Acercar y alejar la cámara usando los controles
 function zoomIn() {
-    controls.dollyIn(1.2);
-    controls.update();
+    window.controls.dollyIn(1.2);
+    window.controls.update();
 }
 
 function zoomOut() {
-    controls.dollyOut(1.2);
-    controls.update();
+    window.controls.dollyOut(1.2);
+    window.controls.update();
 }
 
 // Función de animación
 function animate() {
     requestAnimationFrame(animate);
-    controls.update();
-    if (earth) earth.rotation.y += 0.0005;
-    renderer.render(scene, camera);
+    window.controls.update();
+    if (window.earth) window.earth.rotation.y += 0.0005;
+    window.renderer.render(window.scene, window.camera);
 }
 
 // Función para añadir un marcador en la ubicación de impacto

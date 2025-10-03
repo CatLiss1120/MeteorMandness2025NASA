@@ -41,7 +41,7 @@ function createOrbitLine() {
     orbitLine = new THREE.Line(orbitGeometry, orbitMaterial);
     
     // Añadir a la escena
-    scene.add(orbitLine);
+    window.scene.add(orbitLine);
 }
 
 // Generar puntos para la órbita
@@ -102,7 +102,7 @@ function createOrbitObject() {
     orbitObject.position.copy(initialPosition);
     
     // Añadir a la escena
-    scene.add(orbitObject);
+    window.scene.add(orbitObject);
 }
 
 // Animar el movimiento del objeto en la órbita
@@ -166,7 +166,7 @@ function updateOrbitParameters(params) {
     
     // Actualizar visualización
     if (orbitLine) {
-        scene.remove(orbitLine);
+        window.scene.remove(orbitLine);
         createOrbitLine();
     }
 }

@@ -8,7 +8,10 @@ document.addEventListener('DOMContentLoaded', () => {
     const formattedDate = '2024-10-28';
     document.getElementById('search-date').value = formattedDate;
 
-    // Inicializar simulación de órbitas y simulación de impacto (visualización 3D se inicializa en showView)
+    // Inicializar visualización de la Tierra antes de las simulaciones
+    if (typeof initEarthVisualization === 'function') initEarthVisualization();
+
+    // Inicializar simulación de órbitas y simulación de impacto
     if (typeof initOrbitSimulation === 'function') initOrbitSimulation();
     if (typeof initImpactSimulation === 'function') initImpactSimulation();
 
