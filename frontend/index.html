@@ -8,9 +8,11 @@
 </head>
 <body>
     <header>
-        <h1>Meteor Madness</h1>
+        <span id="mm">
+            <p id="mmm">Meteor Madness</p>
+        </span>
         <nav>
-            <ul>
+            <ul id="nav-menu">
                 <li><a href="#" class="active" data-view="earth">Tierra</a></li>
                 <li><a href="#" data-view="asteroids">Asteroides</a></li>
                 <li><a href="#" data-view="simulation">Simulación de Impacto</a></li>
@@ -88,7 +90,7 @@
             <div class="control-group">
                 <h3>Seleccionar Asteroide</h3> <br/>
                 <select id="asteroid-select">
-                    <option value="">Selecciona un asteroide...</option>
+                    <option value="" id="lista">Selecciona un asteroide...</option>
                 </select>
             </div>
 
@@ -126,7 +128,7 @@
     </main>
 
     <footer>
-        <p>&copy; 2023 Meteor Madness - Simulador de Impactos de Asteroides</p>
+        <p>2025 Meteor Madness - SpaceLights</p>
     </footer>
 
     <!-- Scripts (Cargados al final) -->

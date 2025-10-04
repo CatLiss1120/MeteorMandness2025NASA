@@ -28,12 +28,13 @@ header {
 header h1 { margin: 0; font-size: 36px; color: #19c2da; }
 
 #language-selector { position: absolute; right: 20px; top: 14px; }
-#language-selector button { margin-left: 6px; padding:6px 8px; border-radius:4px; border: none; background:#0b3b44; color:#cfeff4; cursor:pointer; }
+#language-selector button { margin-left: 6px; padding:6px 8px; border-radius:4px; border: none; background:#0b3b44; color:#cfeff4; }
 
 nav { margin-top: 10px; }
 nav ul { list-style: none; display: flex; gap: 24px; padding: 0; margin: 6px 0 0 0; }
 nav ul li a { color: #cfeff4; text-decoration: none; padding: 8px 12px; border-radius: 8px; }
-nav ul li a.active, nav ul li a:hover { background: #12b7d6; color: #042022; }
+nav ul li a:hover { background: #3d7e6e; color: #ffffff; }
+nav ul li a.active { background: #a6ce75; color: #121212; font-weight: bold; }
 
 
 
@@ -81,17 +82,19 @@ main {
 }
 
 button {
-    background-color: #00b4d8;
+    background-color: #a6ce75;
     color: #121212;
     border: none;
     padding: 0.5rem 1rem;
     border-radius: 4px;
     cursor: pointer;
     transition: background-color 0.3s;
+    font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
 }
 
 button:hover {
-    background-color: #0096c7;
+    background-color: #3d7e6e;
+    color: #fff;
 }
 
 button:disabled {
@@ -104,11 +107,12 @@ button:disabled {
      background-image: url('../assets/stars-bg.jpg');
     background-size: cover;
     padding: 2rem;
+    font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
 }
 
 #asteroids-view h2 {
     margin-bottom: 1rem;
-    color: #00b4d8;
+    color: #a6ce75;
 }
 
 .search-container {
@@ -132,6 +136,12 @@ button:disabled {
     border-radius: 8px;
     padding: 1rem;
     margin-bottom: 1rem;
+    font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+    ;
+}
+
+#asteroid-item.simulate-btn:hover {
+    background-color: #0096c7;
 }
 
 .create-asteroid {
@@ -142,7 +152,7 @@ button:disabled {
 
 .create-asteroid h3 {
     margin-bottom: 1rem;
-    color: #00b4d8;
+    color: #a6ce75;
 }
 
 .form-group {
@@ -167,7 +177,8 @@ button:disabled {
 /* Vista de simulación */
 #simulation-view h2 {
     margin-bottom: 1rem;
-    color: #00b4d8;
+    color: #a6ce75;
+    font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
 }
 
 .simulation-controls {
@@ -192,7 +203,7 @@ button:disabled {
 #earth-map-canvas {
     width: 100%;
     height: 300px;
-    border: 2px solid #00bcd4;
+    border: 2px solid #a6ce75;
     border-radius: 10px;
     background: #001122;
     margin-top: 10px;
@@ -201,7 +212,7 @@ button:disabled {
 .asteroid-selection h3,
 .impact-location h3 {
     margin-bottom: 1rem;
-    color: #00b4d8;
+    color: #a6ce75;
 }
 
 #asteroid-select {
@@ -221,16 +232,18 @@ button:disabled {
 #simulation-results, #mitigation-results {
     background-color: #2a2a4a;
     border-radius: 8px;
-    padding: 1rem;
+    padding: 20px;
     min-height: 200px;
     max-height: 400px;
     overflow-y: auto;
+    font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
 }
 
 /* Vista de mitigación */
 #mitigation-view h2 {
     margin-bottom: 1rem;
-    color: #00b4d8;
+    color: #a6ce75;
+    font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
 }
 
 .mitigation-options {
@@ -238,6 +251,7 @@ button:disabled {
     grid-template-columns: repeat(3, 1fr);
     gap: 1rem;
     margin-bottom: 1rem;
+    font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
 }
 
 .option {
@@ -248,7 +262,7 @@ button:disabled {
 
 .option h3 {
     margin-bottom: 0.5rem;
-    color: #00b4d8;
+    color: #a6ce75;
 }
 
 .option p {
@@ -336,19 +350,21 @@ footer {
     background-color: rgba(42, 42, 74, 0.7);
     padding: 1rem;
     border-radius: 8px;
-    
+    font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
 }
 
 #run-simulation {
     padding: 1rem;
     font-size: 1.2rem;
     font-weight: bold;
+    font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
 }
 
 #run-simulation:disabled {
     background-color: #333;
     color: #777;
     cursor: not-allowed;
+    font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
 }
 /* --- ESTILOS PARA LA VISTA DE ASTEROIDES --- */
 #asteroids-view {
@@ -385,7 +401,7 @@ footer {
     border-radius: 8px;
     padding: 1rem;
     margin-bottom: 1rem;
-    border-left: 4px solid #00b4d8; /* Borde de acento */
+    border-left: 4px solid #a6ce75; /* Borde de acento */
 }
 
 .asteroid-item.hazardous {
@@ -429,7 +445,7 @@ footer {
     width: auto;
     padding: 8px 16px;
     margin-top: 1rem;
-    background-color: #00b4d8;
+    background-color: #a6ce75;
     color: #121212;
     border: none;
     border-radius: 4px;
@@ -439,5 +455,49 @@ footer {
 }
 
 .asteroid-item .simulate-btn:hover {
-    background-color: #0096c7;
+    background-color: #3d7e6e;
+    color: #fff;
+}
+
+#mm {
+    font-size: 72px;
+    font-weight: 500;
+    line-height: 80px;
+    text-align: center;
+    font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+}
+
+#mm.mmm { 
+    background-image: linear-gradient(rgb(255, 255, 255) 0%, rgba(255, 255, 255, 0.7));
+}
+
+#nav-menu {
+    border-color: #ffffff14;
+    background-color: #ffffff05;
+    border-radius: 999px;
+    border-style: solid;
+    border-width: 0.8px;
+    color: #fff;
+    display: flex;
+    padding: 10px 12px;;
+}
+
+a {
+    font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+}
+
+#lat-input, #lon-input {
+    font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+}
+
+#lista {
+    font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+}
+
+input {
+    font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+}
+
+option {
+    font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
 }
