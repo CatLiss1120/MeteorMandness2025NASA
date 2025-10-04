@@ -25,12 +25,43 @@ def serve_frontend(path):
 @app.route('/api/asteroids', methods=['GET'])
 def get_asteroids():
     date = request.args.get('date')
+    name = request.args.get('name', '').lower()
+    diameter = request.args.get('diameter', '').strip()
+    type_ = request.args.get('type', '').strip().lower()
     if not date:
         return jsonify({'error': 'Se requiere una fecha'}), 400
-    
+
     try:
         asteroids = get_asteroids_by_date(date)
-        return jsonify(asteroids)
+        # Filtrar por nombre si se proporciona
+        if name:
+            asteroids = [a for a in asteroids if name in a.get('name', '').lower()]
+        # Filtrar por diámetro si se proporciona
+        if diameter:
+            try:
+                diameter_val = float(diameter)
+                asteroids = [a for a in asteroids if 'estimated_diameter' in a and 'meters' in a['estimated_diameter'] and a['estimated_diameter']['meters']['estimated_diameter_max'] >= diameter_val]
+            except ValueError:
+                pass
+        # Filtrar por tipo si se proporciona
+        if type_:
+            def get_type(a):
+                # Si el asteroide tiene composición, usarla; si no, asignar por heurística
+                comp = a.get('composition', None)
+                if comp:
+                    return comp.lower()
+                # Heurística: si el nombre contiene "metal", "ice", etc.
+                n = a.get('name', '').lower()
+                if 'metal' in n:
+                    return 'metallic'
+                if 'ice' in n or 'icy' in n:
+                    return 'icy'
+                return 'rocky'
+            asteroids = [a for a in asteroids if get_type(a) == type_]
+        return jsonify({
+            'count': len(asteroids),
+            'asteroids': asteroids
+        })
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
@@ -69,9 +100,13 @@ def save_custom_asteroid():
     
     # En una implementación real, aquí se guardarían los datos en una base de datos
     # Por ahora, simplemente devolvemos los datos recibidos
+    # Agregar campo de nivel de riesgo si no existe
+    if 'riesgo' not in data:
+        data['riesgo'] = 'desconocido'  # Puede ser: bajo, medio, alto, desconocido
     return jsonify({
         'success': True,
-        'asteroid': data
+        'asteroid': data,
+        'count': 1
     })
 
 if __name__ == '__main__':

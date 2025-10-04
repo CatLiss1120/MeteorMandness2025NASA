@@ -1,229 +1,170 @@
-// Archivo principal de JavaScript para Meteor Madness
+window.asteroidsForSimulation = {};
 
 document.addEventListener('DOMContentLoaded', () => {
-    // --- INICIALIZACIÓN ---
-    
-    // Inicializar la fecha actual para la búsqueda de asteroides
-    const today = new Date();
-    const formattedDate = '2024-10-28';
-    document.getElementById('search-date').value = formattedDate;
+    showView('earth');
 
-    // Inicializar visualización de la Tierra antes de las simulaciones
-    if (typeof initEarthVisualization === 'function') initEarthVisualization();
+    document.getElementById('search-date').value = new Date().toISOString().split('T')[0];
+    handleSearch();
 
-    // Inicializar simulación de órbitas y simulación de impacto
-    if (typeof initOrbitSimulation === 'function') initOrbitSimulation();
-    if (typeof initImpactSimulation === 'function') initImpactSimulation();
-
-    // --- MANEJO DE EVENTOS ---
-
-    // 1. Navegación entre vistas
-    const navLinks = document.querySelectorAll('nav a');
-    navLinks.forEach(link => {
+    document.querySelectorAll('nav a').forEach(link => {
         link.addEventListener('click', (e) => {
             e.preventDefault();
-            const viewId = link.getAttribute('data-view');
-            showView(viewId);
+            showView(link.getAttribute('data-view'));
         });
     });
 
-    // 2. Menú de usuario
-    const userMenuButton = document.getElementById('user-menu-button');
-    const userMenu = document.getElementById('user-menu');
-    userMenuButton.addEventListener('click', () => {
-        userMenu.classList.toggle('hidden');
-    });
+    document.getElementById('search-asteroids').addEventListener('click', handleSearch);
 
-    document.querySelectorAll('.menu-option').forEach(option => {
-        option.addEventListener('click', () => {
-            const action = option.getAttribute('data-action');
-            userMenu.classList.add('hidden');
-            handleMenuAction(action);
-        });
-    });
-    
-    // 3. Búsqueda de asteroides
-    document.getElementById('search-asteroids').addEventListener('click', () => {
-        const date = document.getElementById('search-date').value;
-        if (date) searchAsteroids(date);
-    });
-    // Realizar una búsqueda inicial al cargar la página
-    searchAsteroids(formattedDate);
-
-    // 4. Creación de asteroide personalizado
     document.getElementById('create-asteroid-form').addEventListener('submit', (e) => {
         e.preventDefault();
         createCustomAsteroid();
     });
 
-    // 5. Selector de idioma
-    document.getElementById('lang-es').addEventListener('click', () => {
-        document.getElementById('lang-es').classList.add('active');
-        document.getElementById('lang-en').classList.remove('active');
-        changeLanguage('es');
-    });
-    document.getElementById('lang-en').addEventListener('click', () => {
-        document.getElementById('lang-en').classList.add('active');
-        document.getElementById('lang-es').classList.remove('active');
-        changeLanguage('en');
-    });
-
-    // 6. Opciones de mitigación
-    document.querySelectorAll('[data-mitigation]').forEach(button => {
-        button.addEventListener('click', (e) => {
-            const mitigationType = e.target.getAttribute('data-mitigation');
-            if (typeof applyMitigation === 'function') applyMitigation(mitigationType);
-        });
-    });
-
-    // 7. Controles de visualización 3D
-    document.getElementById('zoom-in').addEventListener('click', () => {
-        if (typeof zoomIn === 'function') zoomIn();
-    });
-    document.getElementById('zoom-out').addEventListener('click', () => {
-        if (typeof zoomOut === 'function') zoomOut();
-    });
-    document.getElementById('toggle-view').addEventListener('click', () => {
-        if (typeof toggleView === 'function') toggleView();
-    });
-    
-    // 8. Selector de asteroides en la vista de simulación
     document.getElementById('asteroid-select').addEventListener('change', checkSimulationReady);
 
+    document.getElementById('set-coords-btn').addEventListener('click', () => {
+        const lat = parseFloat(document.getElementById('lat-input').value);
+        const lon = parseFloat(document.getElementById('lon-input').value);
+
+        if (!isNaN(lat) && lat >= -90 && lat <= 90 && !isNaN(lon) && lon >= -180 && lon <= 180) {
+            if (typeof updateMarkerFromCoords === 'function') {
+                updateMarkerFromCoords(lat, lon);
+            }
+        } else {
+            alert('Por favor, introduce una latitud (-90 a 90) y longitud (-180 a 180) válidas.');
+        }
+    });
+
+    document.getElementById('run-simulation').addEventListener('click', () => {
+        if (typeof runImpactSimulationAnimation === 'function') {
+            runImpactSimulationAnimation();
+        }
+    });
 });
 
+async function handleSearch() {
+    const asteroidsListContainer = document.getElementById('asteroids-list');
+    asteroidsListContainer.innerHTML = '<p>Buscando asteroides...</p>';
+    try {
+        const asteroids = await searchAsteroidsFromApi();
+        displayAsteroids(asteroids);
+    } catch (error) {
+        console.error('Error al buscar asteroides:', error);
+        asteroidsListContainer.innerHTML = `<div class="error-message"><strong>Error al cargar los asteroides.</strong><p>Detalles: ${error.message}</p><p>Asegúrate de que el servidor backend (Python) esté corriendo.</p></div>`;
+    }
+}
 
-// --- FUNCIONES DE LÓGICA ---
-
-// Función para mostrar una vista específica
 function showView(viewId) {
-    document.querySelectorAll('nav a').forEach(navLink => {
-        navLink.classList.toggle('active', navLink.getAttribute('data-view') === viewId);
-    });
-    document.querySelectorAll('.view').forEach(view => {
-        view.classList.toggle('active', view.id === `${viewId}-view`);
-    });
-    
-    // Ocultar el marcador de impacto si no estamos en la vista de simulación
-    if (viewId !== 'simulation' && window.impactMarker) {
-        if (window.scene) {
-            scene.remove(impactMarker.marker);
-            scene.remove(impactMarker.glow);
-            window.impactMarker = null;
-        }
+    document.querySelectorAll('.view').forEach(view => view.classList.remove('active'));
+    document.querySelectorAll('nav a').forEach(link => link.classList.remove('active'));
+    const activeView = document.getElementById(`${viewId}-view`);
+    const activeLink = document.querySelector(`nav a[data-view="${viewId}"]`);
+    if (activeView) activeView.classList.add('active');
+    if (activeLink) activeLink.classList.add('active');
+    if (viewId === 'earth') {
+        if (typeof initEarthVisualization === 'function') initEarthVisualization();
+    } else if (viewId === 'simulation') {
+        if (typeof initEarthSimulationCanvas === 'function') initEarthSimulationCanvas();
+        updateAsteroidSelect();
     }
 }
 
-// Función para manejar acciones del menú de usuario
-function handleMenuAction(action) {
-    switch(action) {
-        case 'impact-2025':
-            showView('simulation');
-            // Aquí se podría pre-seleccionar un asteroide específico si existiera
-            break;
-        case 'create-asteroid':
-            showView('asteroids');
-            document.querySelector('.create-asteroid').scrollIntoView({ behavior: 'smooth' });
-            break;
-        case 'mitigation':
-            showView('mitigation');
-            break;
-        case 'other-asteroids':
-            showView('asteroids');
-            break;
+function displayAsteroids(asteroids) {
+    const asteroidsListContainer = document.getElementById('asteroids-list');
+    asteroidsListContainer.innerHTML = '';
+    window.asteroidsForSimulation = {};
+    if (!asteroids || asteroids.length === 0) {
+        asteroidsListContainer.innerHTML = `<p>No se encontraron asteroides para los filtros seleccionados.</p>`;
+        return;
     }
+    asteroids.forEach(asteroidData => {
+        const diameter = Math.round(asteroidData.estimated_diameter?.meters?.estimated_diameter_max) || asteroidData.diameter || 'Desconocido';
+        const velocity = parseFloat(asteroidData.close_approach_data?.[0]?.relative_velocity?.kilometers_per_second).toFixed(2) || asteroidData.velocity || 'Desconocido';
+        const asteroid = { name: asteroidData.name, diameter, velocity, is_potentially_hazardous_asteroid: asteroidData.is_potentially_hazardous_asteroid, riesgo: asteroidData.riesgo, custom: asteroidData.custom };
+        window.asteroidsForSimulation[asteroid.name] = asteroid;
+        addAsteroidToListHTML(asteroid);
+    });
+    updateAsteroidSelect();
 }
 
-// Función para crear un asteroide personalizado
+function addAsteroidToListHTML(asteroid) {
+    const asteroidsListContainer = document.getElementById('asteroids-list');
+    const element = document.createElement('div');
+    element.className = 'asteroid-item';
+    if (asteroid.is_potentially_hazardous_asteroid || asteroid.riesgo === 'alto') {
+        element.classList.add('hazardous');
+    }
+    element.innerHTML = `<h3>${asteroid.name} ${asteroid.custom ? '⭐' : (asteroid.is_potentially_hazardous_asteroid ? '⚠️' : '')}</h3><p>Diámetro estimado: ${asteroid.diameter} m</p><p>Velocidad relativa: ${asteroid.velocity} km/s</p><p>Riesgo: ${asteroid.riesgo || 'No evaluado'}</p><button class="simulate-btn" data-name="${asteroid.name}">Simular Impacto</button>`;
+    element.querySelector('.simulate-btn').addEventListener('click', () => {
+        showView('simulation');
+        setTimeout(() => {
+            document.getElementById('asteroid-select').value = asteroid.name;
+            checkSimulationReady();
+        }, 50);
+    });
+    asteroidsListContainer.appendChild(element);
+}
+
 async function createCustomAsteroid() {
-    const asteroid = {
-        name: document.getElementById('asteroid-name').value,
+    const form = document.getElementById('create-asteroid-form');
+    const asteroidData = {
+        name: document.getElementById('asteroid-name').value.trim(),
         diameter: parseFloat(document.getElementById('asteroid-diameter').value),
         velocity: parseFloat(document.getElementById('asteroid-velocity').value),
-        composition: document.getElementById('asteroid-composition').value,
+        riesgo: document.getElementById('asteroid-risk').value,
         custom: true
     };
 
+    if (!asteroidData.name || isNaN(asteroidData.diameter) || isNaN(asteroidData.velocity)) {
+        alert('Por favor, completa todos los campos correctamente.');
+        return;
+    }
+
     try {
-        const response = await fetch('/api/asteroids/custom', {
+        const response = await fetch('http://localhost:5000/api/asteroids/custom', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(asteroid)
+            body: JSON.stringify(asteroidData)
         });
 
-        if (!response.ok) throw new Error('Error al guardar el asteroide en el servidor.');
+        if (!response.ok) {
+            const error = await response.json();
+            throw new Error(error.error || 'El servidor no pudo crear el asteroide.');
+        }
 
         const result = await response.json();
         if (result.success) {
-            addAsteroidToList(result.asteroid, true);
-            document.getElementById('create-asteroid-form').reset();
-            alert(`Asteroide "${asteroid.name}" creado con éxito.`);
+            const newAsteroid = result.asteroid;
+            window.asteroidsForSimulation[newAsteroid.name] = newAsteroid;
+            addAsteroidToListHTML(newAsteroid);
+            updateAsteroidSelect();
+            form.reset();
+            alert(`Asteroide "${newAsteroid.name}" creado con éxito.`);
         }
     } catch (error) {
         console.error('Error al crear asteroide personalizado:', error);
-        alert('Hubo un problema al crear el asteroide.');
+        alert(`Hubo un problema al crear el asteroide: ${error.message}`);
     }
 }
 
-// Función para añadir un asteroide a la lista visual y al selector de simulación
-function addAsteroidToList(asteroid, isCustom) {
-    // Añadir a la lista visual
-    const asteroidsList = document.getElementById('asteroids-list');
-    const asteroidElement = document.createElement('div');
-    asteroidElement.classList.add('asteroid-item');
-    if(asteroid.hazardous) asteroidElement.classList.add('hazardous');
-    
-    asteroidElement.innerHTML = `
-        <h3>${asteroid.name} ${asteroid.hazardous ? '⚠️' : ''} ${isCustom ? '⭐' : ''}</h3>
-        <p>Diámetro: ${asteroid.diameter} m</p>
-        <p>Velocidad: ${asteroid.velocity} km/s</p>
-        <p>Composición: ${getCompositionName(asteroid.composition)}</p>
-        <button class="select-asteroid" data-name="${asteroid.name}">Seleccionar para simulación</button>
-    `;
-    asteroidsList.appendChild(asteroidElement);
-
-    // Guardar los datos del asteroide para la simulación
-    window.asteroidsForSimulation[asteroid.name] = asteroid;
-
-    // Añadir al selector de simulación
-    const asteroidSelect = document.getElementById('asteroid-select');
-    const option = document.createElement('option');
-    option.value = asteroid.name;
-    option.textContent = `${asteroid.name} (${asteroid.diameter} m)`;
-    asteroidSelect.appendChild(option);
-
-    // Añadir evento al botón de selección
-    asteroidElement.querySelector('.select-asteroid').addEventListener('click', () => {
-        asteroidSelect.value = asteroid.name;
-        showView('simulation');
-        checkSimulationReady();
-    });
-}
-
-// Función para obtener el nombre de la composición (centralizada)
-function getCompositionName(composition) {
-    const compositions = {
-        'rocky': 'Rocoso',
-        'metallic': 'Metálico',
-        'icy': 'Helado'
-    };
-    return compositions[composition] || 'Desconocido';
-}
-
-// Función para aplicar mitigación
-function applyMitigation(type) {
-    const mitigationResults = document.getElementById('mitigation-results');
-    let resultHTML = '';
-    switch(type) {
-        case 'kinetic':
-            resultHTML = `<h3>Desviación Cinética</h3><p>La nave impacta el asteroide y cambia su trayectoria. Efectividad: alta para asteroides pequeños y medianos. Requiere un tiempo de antelación considerable.</p>`;
-            break;
-        case 'gravity':
-            resultHTML = `<h3>Tractor Gravitacional</h3><p>La nave usa su gravedad para alterar lentamente la órbita del asteroide. Efectividad: media, requiere muchos años de operación.</p>`;
-            break;
-        case 'nuclear':
-            resultHTML = `<h3>Explosión Nuclear</h3><p>Una explosión nuclear cercana vaporiza parte de la superficie del asteroide, empujándolo y cambiando su curso. Efectividad: muy alta, pero con altos riesgos de fragmentación.</p>`;
-            break;
+function updateAsteroidSelect() {
+    const selectElement = document.getElementById('asteroid-select');
+    if (!selectElement) return;
+    const currentValue = selectElement.value;
+    selectElement.innerHTML = '<option value="">Selecciona un asteroide...</option>';
+    for (const name in window.asteroidsForSimulation) {
+        const asteroid = window.asteroidsForSimulation[name];
+        const option = document.createElement('option');
+        option.value = name;
+        option.textContent = `${name} (${asteroid.diameter} m)`;
+        selectElement.appendChild(option);
     }
-    mitigationResults.innerHTML = resultHTML;
+    selectElement.value = currentValue;
+}
+
+function checkSimulationReady() {
+    const runButton = document.getElementById('run-simulation');
+    const asteroidSelected = document.getElementById('asteroid-select').value !== "";
+    const locationSelected = window.selectedImpactPoint != null;
+    runButton.disabled = !(asteroidSelected && locationSelected);
 }

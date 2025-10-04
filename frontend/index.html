@@ -5,16 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Meteor Madness</title>
     <link rel="stylesheet" href="css/styles.css">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.min.js"></script>
 </head>
 <body>
     <header>
         <h1>Meteor Madness</h1>
-        <div id="language-selector">
-            <button id="lang-es" class="active">ES</button>
-            <button id="lang-en">EN</button>
-        </div>
         <nav>
             <ul>
                 <li><a href="#" class="active" data-view="earth">Tierra</a></li>
@@ -23,110 +17,111 @@
                 <li><a href="#" data-view="mitigation">Mitigación</a></li>
             </ul>
         </nav>
-        <div id="user-menu-container">
-            <button id="user-menu-button">Menú</button>
-            <div id="user-menu" class="hidden">
-                <h2>Menú de Usuario</h2>
-                <div class="menu-options">
-                    <button class="menu-option" data-action="impact-2025">Simular el impacto (Impacto-2025)</button>
-                    <button class="menu-option" data-action="create-asteroid">Crear un asteroide y simular su impacto</button>
-                    <button class="menu-option" data-action="mitigation">Estrategia de mitigación</button>
-                    <button class="menu-option" data-action="other-asteroids">Probar otros asteroides</button>
-                </div>
-            </div>
+        <div id="language-selector">
+            <button id="lang-es" class="active">ES</button>
+            <button id="lang-en">EN</button>
         </div>
     </header>
 
     <main>
-        <div id="visualization-container">
-            <div id="earth-view" class="view active">
-                <div id="earth-canvas"></div>
-                <div class="controls">
-                    <button id="toggle-view">Vista 2D/3D</button>
-                    <div class="zoom-controls">
-                        <button id="zoom-in">+</button>
-                        <button id="zoom-out">-</button>
+        <!-- Vista 1: Tierra Principal (visible por defecto) -->
+        <div id="earth-view" class="view active">
+            <div id="earth-canvas"></div>
+        </div>
+
+<!-- Vista 2: Asteroides -->
+<div id="asteroids-view" class="view">
+    <div class="asteroids-content-wrapper">
+        <!-- Columna Izquierda: Lista de Asteroides -->
+        <div class="asteroids-list-column">
+            <h2>Asteroides Cercanos a la Tierra</h2>
+            <div class="search-container">
+                <input type="date" id="search-date">
+                <input type="text" id="search-name" placeholder="Buscar por nombre...">
+                <input type="number" id="search-diameter" placeholder="Diámetro mínimo (m)...">
+                <button id="search-asteroids">Buscar</button>
+            </div>
+            <!-- El contenedor donde se mostrará la lista o los errores -->
+            <div id="asteroids-list">
+                <p>Usa los filtros y haz clic en "Buscar" para cargar los asteroides.</p>
+            </div>
+        </div>
+        <!-- Columna Derecha: Crear Asteroide -->
+        <div class="create-asteroid-column">
+            <div class="create-asteroid">
+                <h3>Crear Asteroide Personalizado</h3>
+                <form id="create-asteroid-form">
+                    <div class="form-group">
+                        <label for="asteroid-name">Nombre:</label>
+                        <input type="text" id="asteroid-name" required>
                     </div>
-                </div>
-            </div>
-
-            <div id="asteroids-view" class="view">
-                <h2>Asteroides Cercanos a la Tierra</h2>
-                <div class="search-container">
-                    <input type="date" id="search-date" value="">
-                    <button id="search-asteroids">Buscar</button>
-                </div>
-                <div id="asteroids-list"></div>
-                <div class="create-asteroid">
-                    <h3>Crear Asteroide Personalizado</h3>
-                    <form id="create-asteroid-form">
-                        <div class="form-group">
-                            <label for="asteroid-name">Nombre:</label>
-                            <input type="text" id="asteroid-name" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="asteroid-diameter">Diámetro (metros):</label>
-                            <input type="number" id="asteroid-diameter" min="1" max="100000" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="asteroid-velocity">Velocidad (km/s):</label>
-                            <input type="number" id="asteroid-velocity" min="1" max="100" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="asteroid-composition">Composición:</label>
-                            <select id="asteroid-composition" required>
-                                <option value="rocky">Rocoso</option>
-                                <option value="metallic">Metálico</option>
-                                <option value="icy">Helado</option>
-                            </select>
-                        </div>
-                        <button type="submit">Crear</button>
-                    </form>
-                </div>
-            </div>
-
-
-            <div id="simulation-view" class="view">
-                <h2>Simulación de Impacto</h2>
-                <div class="simulation-controls">
-                    <div class="asteroid-selection">
-                        <h3>Seleccionar Asteroide</h3>
-                        <select id="asteroid-select">
-                            <option value="">Selecciona un asteroide...</option>
+                    <div class="form-group">
+                        <label for="asteroid-diameter">Diámetro (m):</label>
+                        <input type="number" id="asteroid-diameter" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="asteroid-velocity">Velocidad (km/s):</label>
+                        <input type="number" id="asteroid-velocity" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="asteroid-risk">Nivel de riesgo:</label>
+                        <select id="asteroid-risk" required>
+                            <option value="bajo">Bajo</option>
+                            <option value="medio">Medio</option>
+                            <option value="alto">Alto</option>
                         </select>
                     </div>
-                    <div class="impact-location">
-                        <h3>Ubicación de Impacto</h3>
-                        <p>Haz clic en el globo terráqueo para seleccionar la ubicación</p>
-                        <!-- SE ELIMINÓ EL CANVAS DEL MAPA 2D DE AQUÍ -->
-                    </div>
-                    <button id="run-simulation" disabled>Ejecutar Simulación</button>
-                </div>
-                <div id="simulation-results"></div>
+                    <button type="submit">Crear</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+        <!-- Vista 3: Simulación de Impacto -->
+<div id="simulation-view" class="view">
+    <div class="simulation-container">
+        <!-- Columna Izquierda: Controles -->
+        <div class="controls-column">
+            <h2>Simulación de Impacto</h2>
+            
+            <div class="control-group">
+                <h3>Seleccionar Asteroide</h3> <br/>
+                <select id="asteroid-select">
+                    <option value="">Selecciona un asteroide...</option>
+                </select>
             </div>
 
-
-            <div id="mitigation-view" class="view">
-                <h2>Estrategias de Mitigación</h2>
-                <div class="mitigation-options">
-                    <div class="option">
-                        <h3>Desviación Cinética</h3>
-                        <p>Impactar el asteroide con una nave espacial para cambiar su trayectoria.</p>
-                        <button data-mitigation="kinetic">Aplicar</button>
-                    </div>
-                    <div class="option">
-                        <h3>Tractor Gravitacional</h3>
-                        <p>Usar la gravedad de una nave espacial para alterar lentamente la órbita del asteroide.</p>
-                        <button data-mitigation="gravity">Aplicar</button>
-                    </div>
-                    <div class="option">
-                        <h3>Explosión Nuclear</h3>
-                        <p>Detonar un dispositivo nuclear cerca del asteroide para cambiar su curso.</p>
-                        <button data-mitigation="nuclear">Aplicar</button>
-                    </div>
-                </div>
-                <div id="mitigation-results"></div>
+           
+            <button id="run-simulation" disabled>Ejecutar Simulación</button>
+            
+            <div id="simulation-results">
+                <!-- Los resultados aparecerán aquí -->
             </div>
+        </div>
+        <div class="controls-column">
+             <div class="control-group">
+                <h3>Seleccionar Coordenadas</h3> <br/>
+                <p>Haz clic en el globo o introduce las coordenadas:</p> <br/>
+                <input type="text" id="lat-input" placeholder="Latitud (Ej: 40.71)"> 
+                <br/> <br/>
+                <input type="text" id="lon-input" placeholder="Longitud (Ej: -74.00)"> 
+                                <br/> <br/>
+                <button id="set-coords-btn">Usar Coordenadas</button>
+            </div>
+            
+        </div>
+        <!-- Columna Derecha: Canvas 3D -->
+        <div class="canvas-column">
+            <div id="earth-canvas-simulation"></div>
+        </div>
+    </div>
+</div>
+        
+        <!-- Vista 4: Mitigación -->
+        <div id="mitigation-view" class="view">
+            <!-- Contenido de mitigación aquí -->
+            <h2>Estrategias de Mitigación</h2>
         </div>
     </main>
 
@@ -134,12 +129,12 @@
         <p>&copy; 2023 Meteor Madness - Simulador de Impactos de Asteroides</p>
     </footer>
 
-    <!-- Scripts -->
-    <script src="js/visualization.js"></script>
+    <!-- Scripts (Cargados al final) -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.min.js"></script>
     <script src="js/api.js"></script>
-    <script src="js/orbit.js"></script>
+    <script src="js/visualization.js"></script>
     <script src="js/impact.js"></script>
-    <script src="js/i18n.js"></script>
-    <script src="js/main.js"></script>
+    <script src="js/main.js"></script> <!-- main.js al final para que controle todo -->
 </body>
 </html>

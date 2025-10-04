@@ -6,157 +6,36 @@
 }
 
 body {
-    font-family: 'Arial', sans-serif;
-    background-color: #121212;
-    color: #f0f0f0;
-    line-height: 1.6;
+  font-family: Arial, Helvetica, sans-serif;
+  background: #0f0f18; /* dark background */
+  color: #e6f7fb;
+  -webkit-font-smoothing: antialiased;
 }
 
-/* Encabezado */
+/* Header: stacked title + nav + small controls */
 header {
-    background-color: #1a1a2e;
-    padding: 1rem 2rem;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: space-between;
-    align-items: center;
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    z-index: 100;
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  background: #171722;
+  border-bottom: 1px solid rgba(255,255,255,0.03);
+  z-index: 200;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 14px 20px;
 }
 
-header h1 {
-    color: #00b4d8;
-    text-align: center;
-    flex: 1;
-}
+header h1 { margin: 0; font-size: 36px; color: #19c2da; }
 
-nav {
-    margin-top: 1rem;
-    width: 100%;
-}
+#language-selector { position: absolute; right: 20px; top: 14px; }
+#language-selector button { margin-left: 6px; padding:6px 8px; border-radius:4px; border: none; background:#0b3b44; color:#cfeff4; cursor:pointer; }
 
-nav ul {
-    display: flex;
-    justify-content: center;
-    list-style: none;
-}
+nav { margin-top: 10px; }
+nav ul { list-style: none; display: flex; gap: 24px; padding: 0; margin: 6px 0 0 0; }
+nav ul li a { color: #cfeff4; text-decoration: none; padding: 8px 12px; border-radius: 8px; }
+nav ul li a.active, nav ul li a:hover { background: #12b7d6; color: #042022; }
 
-nav ul li {
-    margin: 0 1rem;
-}
 
-nav ul li a {
-    color: #f0f0f0;
-    text-decoration: none;
-    padding: 0.5rem 1rem;
-    border-radius: 4px;
-    transition: background-color 0.3s;
-}
-
-nav ul li a:hover {
-    background-color: #2a2a4a;
-}
-
-nav ul li a.active {
-    background-color: #00b4d8;
-    color: #121212;
-}
-
-/* Selector de idioma */
-#language-selector {
-    display: flex;
-    gap: 0.5rem;
-    margin-left: auto;
-    margin-right: 1rem;
-}
-
-#language-selector button {
-    background-color: #333;
-    color: #fff;
-    border: none;
-    border-radius: 4px;
-    padding: 0.3rem 0.6rem;
-    cursor: pointer;
-    font-weight: bold;
-    transition: background-color 0.3s;
-}
-
-#language-selector button.active {
-    background-color: #00b4d8;
-    color: #121212;
-}
-
-#language-selector button:hover {
-    background-color: #555;
-}
-
-/* Menú de usuario */
-#user-menu-container {
-    position: relative;
-    margin-left: auto;
-}
-
-#user-menu-button {
-    background-color: #00b4d8;
-    color: #121212;
-    border: none;
-    border-radius: 4px;
-    padding: 0.5rem 1rem;
-    cursor: pointer;
-    font-weight: bold;
-}
-
-#user-menu {
-    position: absolute;
-    top: 100%;
-    right: 0;
-    background-color: #1a1a2e;
-    border-radius: 4px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
-    padding: 1rem;
-    min-width: 250px;
-    z-index: 1000;
-    max-height: 80vh;
-    overflow-y: auto;
-}
-
-#user-menu.hidden {
-    display: none;
-}
-
-#user-menu h2 {
-    margin-top: 0;
-    color: #00b4d8;
-    font-size: 1.2rem;
-    border-bottom: 1px solid #333;
-    padding-bottom: 0.5rem;
-}
-
-.menu-options {
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
-}
-
-.menu-option {
-    background-color: #333;
-    color: #fff;
-    border: none;
-    border-radius: 4px;
-    padding: 0.8rem;
-    text-align: left;
-    cursor: pointer;
-    transition: background-color 0.3s;
-}
-
-.menu-option:hover {
-    background-color: #00b4d8;
-    color: #121212;
-}
 
 /* Contenedor principal */
 main {
@@ -176,26 +55,18 @@ main {
 }
 
 /* Vistas */
-.view {
-    display: none;
+#earth-canvas {
     width: 100%;
-    height: 100%;
-    position: relative;
-    z-index: 1;
-    overflow-y: auto;
-    padding: 1rem;
+    height: 80vh; 
+    cursor: grab;
+}
+
+.view {
+    display: none; /* Ocultar todas las vistas por defecto */
 }
 
 .view.active {
-    display: block;
-}
-
-/* Vista de la Tierra */
-#earth-canvas {
-    width: 100%;
-    height: 90%;
-    background-color: #000;
-    border-radius: 8px;
+    display: block; /* Mostrar solo la que tenga la clase 'active' */
 }
 
 .controls {
@@ -230,8 +101,9 @@ button:disabled {
 
 /* Vista de asteroides */
 #asteroids-view {
-    background-image: url('../assets/stars-bg.jpg');
+     background-image: url('../assets/stars-bg.jpg');
     background-size: cover;
+    padding: 2rem;
 }
 
 #asteroids-view h2 {
@@ -420,4 +292,152 @@ footer {
     #run-simulation {
         grid-column: 1;
     }
+}
+#earth-canvas-simulation {
+    width: 100%;
+    height: 350px;
+    max-width: 600px;
+    background-color: #000;
+    border-radius: 8px;
+    margin: 0 auto 1rem auto;
+    display: block;
+    box-shadow: 0 0 20px rgba(0,0,0,0.5);
+}
+/* Estilos para la Vista de Simulación */
+.simulation-container {
+    display: flex;
+    gap: 2rem; /* Espacio entre las columnas */
+    padding: 1rem;
+    align-items: flex-start; /* Alinea los items al inicio */
+}
+
+.controls-column {
+    flex: 1; /* Ocupa 1 parte del espacio */
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem; /* Espacio entre los grupos de controles */
+    padding: 1.5rem;
+}
+
+.canvas-column {
+    flex: 1.5; /* Ocupa 1.5 partes, haciéndola más ancha */
+    height: 75vh; /* Altura del contenedor del canvas */
+    border-radius: 8px;
+    overflow: hidden; /* Para que el canvas no se salga */
+    background: #000;
+}
+
+#earth-canvas-simulation {
+    width: 100%;
+    height: 100%;
+}
+
+.control-group {
+    background-color: rgba(42, 42, 74, 0.7);
+    padding: 1rem;
+    border-radius: 8px;
+    
+}
+
+#run-simulation {
+    padding: 1rem;
+    font-size: 1.2rem;
+    font-weight: bold;
+}
+
+#run-simulation:disabled {
+    background-color: #333;
+    color: #777;
+    cursor: not-allowed;
+}
+/* --- ESTILOS PARA LA VISTA DE ASTEROIDES --- */
+#asteroids-view {
+    padding: 2rem;
+}
+
+.asteroids-content-wrapper {
+    display: flex;
+    gap: 2rem; /* Espacio entre la lista y el formulario */
+}
+
+.asteroids-list-column {
+    flex: 2; /* La columna de la lista ocupa el doble de espacio */
+}
+
+.create-asteroid-column {
+    flex: 1; /* La columna del formulario ocupa 1 parte */
+}
+
+.search-container {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+#asteroids-list {
+    max-height: 65vh; /* Altura máxima antes de mostrar scroll */
+    overflow-y: auto;
+    padding-right: 10px; /* Espacio para la barra de scroll */
+}
+
+.asteroid-item {
+    background: #212130;
+    border-radius: 8px;
+    padding: 1rem;
+    margin-bottom: 1rem;
+    border-left: 4px solid #00b4d8; /* Borde de acento */
+}
+
+.asteroid-item.hazardous {
+    border-left-color: #ff6b6b; /* Borde rojo para los peligrosos */
+}
+
+.asteroid-item h3 {
+    margin-bottom: 0.5rem;
+    color: #e6f7fb;
+}
+
+.asteroid-item p {
+    color: #a0a0b0;
+}
+
+.create-asteroid {
+    background-color: #212130;
+    border-radius: 8px;
+    padding: 1.5rem;
+}
+.create-asteroid h3 {
+    margin-bottom: 1rem;
+}
+.form-group {
+    margin-bottom: 1rem;
+}
+.form-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+    color: #a0a0b0;
+}
+.form-group input, .form-group select {
+    width: 100%;
+    padding: 0.75rem;
+    background-color: #1a1a2e;
+    border: 1px solid #333;
+    color: #f0f0f0;
+    border-radius: 4px;
+}
+.asteroid-item .simulate-btn {
+    width: auto;
+    padding: 8px 16px;
+    margin-top: 1rem;
+    background-color: #00b4d8;
+    color: #121212;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background-color 0.2s;
+}
+
+.asteroid-item .simulate-btn:hover {
+    background-color: #0096c7;
 }

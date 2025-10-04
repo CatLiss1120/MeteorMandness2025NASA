@@ -1,85 +1,27 @@
-/// Archivo para la integración con la API de NASA Near-Earth Object (NEO) Web Service
+// js/api.js
 
-// Ya no necesitamos la clave de la API aquí, se maneja en el backend.
+/**
+ * Busca asteroides en el backend y devuelve los datos.
+ * Esta función es independiente y no manipula el DOM.
+ * @returns {Promise<Array>} Una promesa que se resuelve con la lista de asteroides.
+ * @throws {Error} Lanza un error si la petición falla.
+ */
+async function searchAsteroidsFromApi() {
+    const date = document.getElementById('search-date').value;
+    const name = document.getElementById('search-name').value.trim();
+    const diameter = document.getElementById('search-diameter').value.trim();
 
-// Buscar asteroides cercanos a la Tierra por fecha, usando nuestro backend
-async function searchAsteroids(date) {
-    const asteroidsList = document.getElementById('asteroids-list');
-    try {
-        // Mostrar indicador de carga
-        asteroidsList.innerHTML = '<p>Cargando datos de asteroides desde nuestro servidor...</p>';
-        
-        // Realizar la solicitud a nuestro propio backend
-        const response = await fetch(`/api/asteroids?date=${date}`);
-        
-        if (!response.ok) {
-            const errorData = await response.json();
-            throw new Error(errorData.error || `Error en el servidor: ${response.status}`);
-        }
-        
-        const asteroids = await response.json();
-        
-        // Procesar los datos
-        processAsteroidsData(asteroids, date);
+    let url = `http://localhost:5000/api/asteroids?date=${date}`;
+    if (name) url += `&name=${encodeURIComponent(name)}`;
+    if (diameter) url += `&diameter=${encodeURIComponent(diameter)}`;
 
-    } catch (error) {
-        console.error('Error al buscar asteroides:', error);
-        asteroidsList.innerHTML = `
-            <p class="error">Error al cargar datos de asteroides: ${error.message}</p>
-            <p>Intenta de nuevo más tarde o usa un asteroide personalizado.</p>
-        `;
+    const response = await fetch(url);
+
+    if (!response.ok) {
+        const errorData = await response.json().catch(() => ({ error: 'Respuesta no válida del servidor' }));
+        throw new Error(errorData.error || `Error del servidor: ${response.status}`);
     }
+
+    const result = await response.json();
+    return result.asteroids;
 }
-
-// Procesar los datos de asteroides recibidos del backend
-function processAsteroidsData(asteroids, date) {
-    const asteroidsList = document.getElementById('asteroids-list');
-    
-    if (!asteroids || asteroids.length === 0) {
-        asteroidsList.innerHTML = `<p>No se encontraron asteroides para la fecha ${date}.</p>`;
-        return;
-    }
-    
-    // Limpiar la lista
-    asteroidsList.innerHTML = '';
-    
-    // Añadir cada asteroide a la lista
-    asteroids.forEach(asteroidData => {
-        const asteroidObj = {
-            id: asteroidData.id,
-            name: asteroidData.name,
-            diameter: Math.round(asteroidData.estimated_diameter.meters.estimated_diameter_max),
-            velocity: Math.round(parseFloat(asteroidData.close_approach_data[0].relative_velocity.kilometers_per_second)),
-            composition: getRandomComposition(), // La API no proporciona composición, la generamos
-            hazardous: asteroidData.is_potentially_hazardous_asteroid,
-            custom: false
-        };
-        
-        addAsteroidToList(asteroidObj, false); // No es un asteroide personalizado
-    });
-}
-
-
-// --- FUNCIONES AUXILIARES ---
-
-// (Estas funciones se movieron a main.js para centralizar la lógica de la UI)
-// Las dejamos aquí por si se usan en otro lado, pero es mejor tenerlas en main.js
-
-// Generar una composición aleatoria para un asteroide
-function getRandomComposition() {
-    const compositions = ['rocky', 'metallic', 'icy'];
-    return compositions[Math.floor(Math.random() * compositions.length)];
-}
-
-// Obtener el nombre legible de la composición
-function getCompositionName(composition) {
-    const compositionNames = {
-        'rocky': 'Rocoso',
-        'metallic': 'Metálico',
-        'icy': 'Helado'
-    };
-    return compositionNames[composition] || 'Desconocido';
-}
-
-// Exportar la función principal para uso en otros archivos
-window.searchAsteroids = searchAsteroids;
