@@ -1,59 +1,65 @@
 # Meteor Madness
 
-Aplicación web interactiva y colaborativa que simula cuerpos celestes e impactos de asteroides sobre la Tierra, con visualización 3D/2D, generación de asteroides por usuario, simulaciones de impactos y opciones de mitigación.
+Interactive web application that simulates asteroid impacts on Earth, featuring 3D visualization, user-generated asteroids, impact simulations, and mitigation options.
 
-## Características principales
+## Main Features
 
-- Visualización 3D/2D de la Tierra y cuerpos celestes
-- Simulación de órbitas de asteroides
-- Integración con NASA Near-Earth Object (NEO) Web Service API
-- Generación de asteroides personalizados
-- Simulación de impactos y sus consecuencias
-- Opciones de mitigación de impactos
-- Reportes detallados de consecuencias
+- 3D visualization of Earth and celestial bodies  
+- Integration with NASA Near-Earth Object (NEO) Web Service API  
+- Custom asteroid generation  
+- Impact simulation and consequence analysis  
+- Impact mitigation options  
+- Detailed consequence reports  
 
-## Tecnologías
+## Technologies
 
-- Frontend: HTML, CSS, JavaScript (Three.js para visualización 3D)
-- Backend: Python (Flask)
-- Control de versiones: Git
+- **Frontend:** HTML, CSS, JavaScript (Three.js for 3D visualization)  
+- **Backend:** Python (Flask)  
+- **Version control:** Git  
+- **Cinematics:** Blender  
 
-## Estructura del proyecto
+## Project Structure
 
-```
 MeteorMadness/
 ├── frontend/
-│   ├── index.html
-│   ├── css/
-│   │   └── styles.css
-│   ├── js/
-│   │   ├── main.js
-│   │   ├── visualization.js
-│   │   ├── orbit.js
-│   │   ├── impact.js
-│   │   └── api.js
-│   └── assets/
-│       ├── textures/
-│       ├── models/
-│       └── images/
+│ ├── index.html
+│ │── VideoEspecial.js
+│ ├── css/
+│ │ └── styles.css
+│ ├── js/
+│ ├── main.js
+│ ├── visualization.js
+│ ├── orbit.js
+│ ├── impact.js
+│ └── api.js
+│ └── simulation.js
+│ └── i18n.js
 ├── backend/
-│   ├── app.py
-│   ├── nasa_api.py
-│   ├── orbit_calculator.py
-│   └── impact_simulator.py
-└── docs/
-    └── api_documentation.md
-```
+│ ├── app.py
+│ ├── .env
+│ ├── nasa_api.py
+│ ├── orbit_calculator.py
+│ ├── videos
+│ └── impact_simulator.py
 
-## Instalación
+## Installation
 
-1. Clonar el repositorio
-2. Instalar dependencias del frontend
-3. Instalar dependencias del backend: `pip install -r requirements.txt`
-4. Configurar las claves de API de la NASA
-5. Ejecutar el servidor backend: `python backend/app.py`
-6. Abrir `frontend/index.html` en el navegador
+1. Clone the repository  
+2. Install frontend dependencies  
+3. Install backend dependencies:  
+   ```bash
+   pip install -r requirements.txt
+4. Configure your NASA API keys
+5. Run the backend server:
+    - python backend/app.py
+6. Alternatively, you can run the backend with:
+    - cd backend
+    - python app.py 
+7. Then run the frontend with:
+    - cd frontend
+    - python -m http.server 8000
+8. Finally, open the app using Live Server or go to http://localhost:5000
 
-## Colaboración
-
-Este proyecto está configurado para la colaboración de un equipo de 5 personas. Por favor, sigue las convenciones de Git para contribuir al proyecto.
+## Collaboration
+This project is designed for collaboration among a team of five people.
+Please follow Git conventions when contributing to the project.
