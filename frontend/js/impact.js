@@ -95,7 +95,6 @@ function updateImpactSelection(point) {
     }
 }
 
-// --- Lógica de la Simulación y Animación de Impacto (INTACTA) ---
 
 function runImpactSimulationAnimation() {
     const asteroidName = document.getElementById('asteroid-select').value;
@@ -218,7 +217,6 @@ function shakeScreen(duration, intensity) {
     shake();
 }
 
-// --- CÁLCULO DE RESULTADOS Y LÓGICA DE IMPACTO (SECCIÓN MODIFICADA) ---
 
 async function getImpactResults() {
     const resultsContainer = document.getElementById('simulation-results');
@@ -233,7 +231,6 @@ async function getImpactResults() {
         return;
     }
 
-    // <-- MODIFICADO: Esta llamada usa nuestra nueva lógica de cuadrícula de alta precisión.
     const localIsOcean = isPointOcean(lat, lon);
 
     const simulationData = { asteroid: selectedAsteroid, location: { lat, lon }, localIsOcean };
@@ -251,7 +248,7 @@ async function getImpactResults() {
 
         const impactEffects = await response.json();
         
-        impactEffects.isOcean = localIsOcean; // Aseguramos que el resultado sea el de nuestra lógica
+        impactEffects.isOcean = localIsOcean; 
         
         if (impactEffects.isOcean && typeof predictTsunamiRisk === 'function') {
             impactEffects.tsunamiZones = predictTsunamiRisk(lat, lon);
@@ -301,12 +298,10 @@ function displayImpactResults(asteroid, effects) {
     }
 }
 
-// --- SISTEMA DE CUADRÍCULA DE ALTA PRECISIÓN ---
 
 function latLonToGridNumber(lat, lon) {
-    const GRID_COLS = 60; // Más columnas para mayor precisión horizontal
-    const GRID_ROWS = 30; // Más filas para mayor precisión vertical
-
+    const GRID_COLS = 60; 
+    const GRID_ROWS = 30; 
     const normalizedLon = lon + 180;
     const normalizedLat = 90 - lat;
 
@@ -358,7 +353,6 @@ function isPointOcean(lat, lon) {
     return true; // Es océano
 }
 
-// --- Funciones de Ayuda (Geográficas) ---
 
 function latLonToVector3(lat, lon, radius) {
     const latRad = lat * Math.PI / 180;
