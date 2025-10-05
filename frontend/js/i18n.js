@@ -159,11 +159,10 @@ function changeLanguage(lang) {
     window.currentLanguage = lang;
     localStorage.setItem('language', lang);
 
-    // 1) Elementos con data-i18n: si es input -> placeholder, si no -> textContent
     document.querySelectorAll('[data-i18n]').forEach(el => {
         const key = el.getAttribute('data-i18n');
         const text = translations[lang][key];
-        if (text === undefined) return; // no hay traducción para esa key
+        if (text === undefined) return; 
 
         const tag = el.tagName.toLowerCase();
         if ((tag === 'input' || tag === 'textarea') && (el.hasAttribute('placeholder') || el.type === 'text' || el.type === 'search' || el.type === 'date' || el.type === 'number')) {
@@ -173,14 +172,12 @@ function changeLanguage(lang) {
         }
     });
 
-    // 2) Actualizaciones específicas (seguras: comprueba existencia antes de setear)
     updateSpecificTexts(lang);
 
     console.log('Idioma cambiado a', lang);
 }
 
 function updateSpecificTexts(lang) {
-    // Navegación
     const aEarth = document.querySelector('a[data-view="earth"]');
     if (aEarth && translations[lang]['nav_earth']) aEarth.textContent = translations[lang]['nav_earth'];
 
