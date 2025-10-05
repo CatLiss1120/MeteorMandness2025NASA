@@ -349,3 +349,4 @@ function setupTripleClickVideo(triggerElementId, videoOverlayId, videoElementId)
 setupTripleClickVideo('mm', 'video-overlay', 'secret-video');
 
 window.changeLanguage = changeLanguage;
+
