@@ -1,6 +1,9 @@
+// Variables globales para la simulación
 let sceneSim, cameraSim, rendererSim, earthSim, controlsSim;
 window.selectedImpactPoint = null;
 let impactMarkerSim = null;
+
+// --- Funciones Principales de la Simulación Three.js ---
 
 function initEarthSimulationCanvas() {
     const container = document.getElementById('earth-canvas-simulation');
@@ -25,6 +28,8 @@ function initEarthSimulationCanvas() {
     sceneSim.add(directionalLight);
     
     const textureLoader = new THREE.TextureLoader();
+    textureLoader.crossOrigin = 'anonymous';
+
     const earthGeometry = new THREE.SphereGeometry(2, 64, 64);
     const earthMaterial = new THREE.MeshPhongMaterial({
         map: textureLoader.load('https://threejs.org/examples/textures/planets/earth_atmos_2048.jpg')
@@ -46,7 +51,7 @@ function initEarthSimulationCanvas() {
 
 function animateSimulationView() {
     requestAnimationFrame(animateSimulationView);
-    if (controlsSim) controlsSim.update();
+    if (controlsSim) controlsSim.update(); // Esta línea mantiene la animación de la Tierra
     if (rendererSim) rendererSim.render(sceneSim, cameraSim);
 }
 
@@ -74,8 +79,7 @@ function updateMarkerFromCoords(lat, lon) {
 function updateImpactSelection(point) {
     window.selectedImpactPoint = point.clone();
     const radius = earthSim.geometry.parameters.radius;
-    const lat = 90 - (Math.acos(point.y / radius) * 180 / Math.PI);
-    const lon = (Math.atan2(point.z, point.x) * 180 / Math.PI) - 90;
+    const { lat, lon } = vector3ToLatLon(point, radius);
     document.getElementById('lat-input').value = lat.toFixed(2);
     document.getElementById('lon-input').value = lon.toFixed(2);
     
@@ -86,11 +90,22 @@ function updateImpactSelection(point) {
     impactMarkerSim.position.copy(point.clone().multiplyScalar(1.01));
     sceneSim.add(impactMarkerSim);
     
-    checkSimulationReady();
+    if (typeof checkSimulationReady === 'function') {
+        checkSimulationReady();
+    }
 }
 
+// --- Lógica de la Simulación y Animación de Impacto (INTACTA) ---
+
 function runImpactSimulationAnimation() {
-    if (!window.selectedImpactPoint || !earthSim) {
+    const asteroidName = document.getElementById('asteroid-select').value;
+    if (!window.asteroidsForSimulation) {
+        alert("Los datos de los asteroides no están cargados.");
+        return;
+    }
+    const selectedAsteroid = window.asteroidsForSimulation[asteroidName];
+
+    if (!window.selectedImpactPoint || !selectedAsteroid) {
         alert("Por favor, selecciona un asteroide y una ubicación en el mapa.");
         return;
     }
@@ -121,78 +136,14 @@ function runImpactSimulationAnimation() {
             requestAnimationFrame(animateFall);
         } else {
             sceneSim.remove(asteroid);
-            makeImpactEffect(impactPoint);
+            makeImpactEffect(impactPoint, selectedAsteroid); 
             getImpactResults();
         }
     }
     animateFall();
 }
 
-async function getImpactResults() {
-    const resultsContainer = document.getElementById('simulation-results');
-    resultsContainer.innerHTML = `<p>Calculando efectos del impacto...</p>`;
-
-    const asteroidName = document.getElementById('asteroid-select').value;
-    const selectedAsteroid = window.asteroidsForSimulation[asteroidName];
-    const { lat, lon } = {
-        lat: 90 - (Math.acos(window.selectedImpactPoint.y / earthSim.geometry.parameters.radius) * 180 / Math.PI),
-        lon: (Math.atan2(window.selectedImpactPoint.z, window.selectedImpactPoint.x) * 180 / Math.PI) - 90
-    };
-
-    if (!selectedAsteroid) {
-        resultsContainer.innerHTML = `<p class="error">Error: No se encontró el asteroide seleccionado.</p>`;
-        return;
-    }
-
-    const simulationData = { asteroid: selectedAsteroid, location: { lat, lon } };
-
-    try {
-        const response = await fetch('http://localhost:5000/api/impact', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(simulationData),
-        });
-        if (!response.ok) {
-            const error = await response.json();
-            throw new Error(error.error || 'Error desconocido del servidor');
-        }
-        const impactEffects = await response.json();
-        displayImpactResults(selectedAsteroid, impactEffects);
-    } catch (error) {
-        console.error('Error al simular impacto:', error);
-        resultsContainer.innerHTML = `<p class="error"><strong>Fallo en la simulación:</strong> ${error.message}</p>`;
-    }
-}
-
-function displayImpactResults(asteroid, effects) {
-    const resultsContainer = document.getElementById('simulation-results');
-    let consequencesHTML = '';
-    if (effects.isOcean) {
-        if (effects.tsunamiHeight > 5) {
-            consequencesHTML = `<li><strong>¡Alerta de Tsunami!</strong> Se genera una ola de aproximadamente <strong>${effects.tsunamiHeight.toFixed(1)} metros</strong>.</li>`;
-        } else {
-            consequencesHTML = `<li>Impacto en el océano, pero sin generación de un tsunami significativo.</li>`;
-        }
-    } else {
-        if (effects.blastRadius > 10) {
-            consequencesHTML = `<li><strong>Evento Sísmico Mayor:</strong> El impacto podría generar un terremoto de gran magnitud en la región.</li>`;
-        } else {
-            consequencesHTML = `<li>Devastación local severa, pero sin efectos sísmicos a gran escala.</li>`;
-        }
-    }
-    resultsContainer.innerHTML = `
-        <h3>Resultados del Impacto</h3>
-        <p><strong>Asteroide:</strong> ${asteroid.name}</p>
-        <ul>
-            <li><strong>Energía Liberada:</strong> ${effects.energyMT.toFixed(2)} Megatones de TNT</li>
-            <li><strong>Diámetro del Cráter:</strong> ${effects.craterDiameter.toFixed(2)} km</li>
-            <li><strong>Radio de Devastación:</strong> ${effects.blastRadius.toFixed(2)} km</li>
-            ${consequencesHTML}
-        </ul>
-    `;
-}
-
-function makeImpactEffect(point) {
+function makeImpactEffect(point, asteroid) {
     shakeScreen(500, 0.08);
     const flash = new THREE.PointLight(0xffffff, 100, 20, 2);
     flash.position.copy(point);
@@ -209,19 +160,35 @@ function makeImpactEffect(point) {
         }
     }
     animateFlash();
+
     const textureLoader = new THREE.TextureLoader();
     const shockwaveTexture = textureLoader.load('https://threejs.org/examples/textures/sprites/disc.png');
-    const shockwaveMaterial = new THREE.SpriteMaterial({ map: shockwaveTexture, color: 0xff0000, transparent: true, blending: THREE.AdditiveBlending, opacity: 0.9 });
-    const shockwave = new THREE.Sprite(shockwaveMaterial);
-    shockwave.position.copy(point);
+
+    const shockwaveGeo = new THREE.PlaneGeometry(1, 1);
+    const shockwaveMat = new THREE.MeshBasicMaterial({
+        map: shockwaveTexture,
+        color: 0xff0000,
+        transparent: true,
+        blending: THREE.AdditiveBlending,
+        opacity: 0.9,
+        depthWrite: false,
+        side: THREE.DoubleSide 
+    });
+    const shockwave = new THREE.Mesh(shockwaveGeo, shockwaveMat);
+
+    shockwave.position.copy(point.clone().multiplyScalar(1.001));
+    shockwave.lookAt(new THREE.Vector3(0, 0, 0));
     shockwave.scale.set(0.1, 0.1, 0.1);
     sceneSim.add(shockwave);
+
+    const maxScale = 1.5 + (asteroid.diameter / 60);
+
     const waveDuration = 1800;
     const waveStart = performance.now();
     function animateShockwave() {
         const t = (performance.now() - waveStart) / waveDuration;
         if (t < 1) {
-            const scale = 4 * t;
+            const scale = maxScale * t;
             shockwave.scale.set(scale, scale, scale);
             shockwave.material.opacity = 0.9 * (1 - t);
             requestAnimationFrame(animateShockwave);
@@ -251,11 +218,196 @@ function shakeScreen(duration, intensity) {
     shake();
 }
 
+// --- CÁLCULO DE RESULTADOS Y LÓGICA DE IMPACTO (SECCIÓN MODIFICADA) ---
+
+async function getImpactResults() {
+    const resultsContainer = document.getElementById('simulation-results');
+    resultsContainer.innerHTML = `<p>Calculando efectos del impacto...</p>`;
+
+    const asteroidName = document.getElementById('asteroid-select').value;
+    const selectedAsteroid = window.asteroidsForSimulation[asteroidName];
+    const { lat, lon } = vector3ToLatLon(window.selectedImpactPoint, earthSim.geometry.parameters.radius);
+
+    if (!selectedAsteroid) {
+        resultsContainer.innerHTML = `<p class="error">Error: Asteroide seleccionado no encontrado.</p>`;
+        return;
+    }
+
+    // <-- MODIFICADO: Esta llamada usa nuestra nueva lógica de cuadrícula de alta precisión.
+    const localIsOcean = isPointOcean(lat, lon);
+
+    const simulationData = { asteroid: selectedAsteroid, location: { lat, lon }, localIsOcean };
+
+    try {
+        const response = await fetch('http://localhost:5000/api/impact', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(simulationData),
+        });
+        
+        if (!response.ok) {
+            throw new Error(`Error del servidor: ${response.statusText}`);
+        }
+
+        const impactEffects = await response.json();
+        
+        impactEffects.isOcean = localIsOcean; // Aseguramos que el resultado sea el de nuestra lógica
+        
+        if (impactEffects.isOcean && typeof predictTsunamiRisk === 'function') {
+            impactEffects.tsunamiZones = predictTsunamiRisk(lat, lon);
+        }
+        displayImpactResults(selectedAsteroid, impactEffects);
+
+    } catch (error) {
+        console.error('Error simulando impacto:', error);
+        resultsContainer.innerHTML = `<p class="error"><strong>Fallo en la Simulación:</strong> ${error.message}</p>`;
+    }
+}
+
+function displayImpactResults(asteroid, effects) {
+    const resultsContainer = document.getElementById('simulation-results');
+    let consequencesHTML = '';
+
+    if (effects.isOcean) {
+        consequencesHTML = `<li><strong>¡Tsunami!</strong> El impacto ha ocurrido en el mar, generando una ola masiva.</li>`;
+        if (effects.tsunamiHeight > 0.1) {
+             consequencesHTML += `<li>Altura estimada de la ola inicial: <strong>${effects.tsunamiHeight.toFixed(1)} metros</strong>.</li>`;
+        }
+    } else {
+        consequencesHTML = `<li><strong>¡Sismo!</strong> El impacto ha ocurrido en tierra, generando un evento sísmico de gran magnitud.</li>`;
+    }
+    
+    resultsContainer.innerHTML = `
+        <h3>Resultados del Impacto</h3>
+        <p><strong>Asteroide:</strong> ${asteroid.name}</p>
+        <ul>
+            ${consequencesHTML}
+            <li><strong>Energía Liberada:</strong> ${effects.energyMT.toFixed(2)} Megatones de TNT</li>
+            <li><strong>Diámetro del Cráter:</strong> ${effects.craterDiameter.toFixed(2)} km</li>
+            <li><strong>Radio de la Explosión:</strong> ${effects.blastRadius.toFixed(2)} km</li>
+        </ul>
+    `;
+
+    if (effects.isOcean && effects.tsunamiZones && effects.tsunamiZones.length) {
+        const zones = effects.tsunamiZones.slice(0, 5).map(z => `
+            <li>Costa en lat ${z.coastPoint.lat.toFixed(2)}, lon ${z.coastPoint.lon.toFixed(2)} — a ${Math.round(z.distanceKm)} km</li>
+        `).join('');
+        resultsContainer.innerHTML += `
+            <h4>Zonas Costeras en Riesgo (Estimado)</h4>
+            <ul>
+                ${zones}
+            </ul>
+        `;
+    }
+}
+
+// --- SISTEMA DE CUADRÍCULA DE ALTA PRECISIÓN ---
+
+function latLonToGridNumber(lat, lon) {
+    const GRID_COLS = 60; // Más columnas para mayor precisión horizontal
+    const GRID_ROWS = 30; // Más filas para mayor precisión vertical
+
+    const normalizedLon = lon + 180;
+    const normalizedLat = 90 - lat;
+
+    const col = Math.floor(normalizedLon / (360 / GRID_COLS));
+    const row = Math.floor(normalizedLat / (180 / GRID_ROWS));
+
+    const gridNumber = (row * GRID_COLS) + col + 1;
+    return gridNumber;
+}
+
+// Zonas de Tierra definidas para una cuadrícula de 60x30 (1800 cuadrados)
+const LAND_ZONES = [
+    // Groenlandia
+    { start: 147, end: 151 }, { start: 206, end: 211 }, { start: 266, end: 269 },
+    // Norteamérica
+    { start: 304, end: 320 }, { start: 365, end: 382 }, { start: 426, end: 444 }, 
+    { start: 488, end: 504 }, { start: 549, end: 563 }, { start: 612, end: 622 },
+    // Sudamérica
+    { start: 674, end: 684 }, { start: 734, end: 745 }, { start: 795, end: 805 },
+    { start: 855, end: 864 }, { start: 916, end: 923 }, { start: 977, end: 982 }, 
+    { start: 1038, end: 1041 }, { start: 1098, end: 1100 },
+    // Europa
+    { start: 330, end: 332 }, { start: 388, end: 398 }, { start: 448, end: 458 },
+    { start: 509, end: 517 },
+    // África
+    { start: 567, end: 576 }, { start: 627, end: 638 }, { start: 687, end: 699 },
+    { start: 747, end: 759 }, { start: 808, end: 818 }, { start: 869, end: 876 },
+    // Asia y Medio Oriente
+    { start: 333, end: 350 }, { start: 393, end: 414 }, { start: 453, end: 476 },
+    { start: 514, end: 536 }, { start: 575, end: 594 }, { start: 636, end: 652 },
+    { start: 698, end: 710 }, { start: 759, end: 768 },
+    // Australia
+    { start: 1007, end: 1012 }, { start: 1066, end: 1073 }, { start: 1127, end: 1132 },
+    // Antártida
+    { start: 1621, end: 1800 } 
+];
+
+function isPointOcean(lat, lon) {
+    const gridNumber = latLonToGridNumber(lat, lon);
+    
+    for (const zone of LAND_ZONES) {
+        if (gridNumber >= zone.start && gridNumber <= zone.end) {
+            console.log(`Punto (${lat.toFixed(1)}, ${lon.toFixed(1)}) -> Cuadrícula #${gridNumber}. Resultado: TIERRA (Sismo)`);
+            return false; // Es tierra
+        }
+    }
+    
+    console.log(`Punto (${lat.toFixed(1)}, ${lon.toFixed(1)}) -> Cuadrícula #${gridNumber}. Resultado: MAR (Tsunami)`);
+    return true; // Es océano
+}
+
+// --- Funciones de Ayuda (Geográficas) ---
+
 function latLonToVector3(lat, lon, radius) {
-    const phi = (90 - lat) * Math.PI / 180;
-    const theta = (lon + 180) * Math.PI / 180;
-    const x = -(radius * Math.sin(phi) * Math.cos(theta));
-    const z = (radius * Math.sin(phi) * Math.sin(theta));
-    const y = (radius * Math.cos(phi));
+    const latRad = lat * Math.PI / 180;
+    const lonRad = -lon * Math.PI / 180; // Negativo para que coincida con la textura del mapa
+    const x = radius * Math.cos(latRad) * Math.cos(lonRad);
+    const y = radius * Math.sin(latRad);
+    const z = radius * Math.cos(latRad) * Math.sin(lonRad);
     return new THREE.Vector3(x, y, z);
+}
+
+function vector3ToLatLon(vec, radius) {
+    const lat = Math.asin(vec.y / radius) * 180 / Math.PI;
+    const lon = -Math.atan2(vec.z, vec.x) * 180 / Math.PI; // Negativo para que coincida
+    return { lat, lon };
+}
+
+function deg2rad(d) { return d * Math.PI / 180; }
+function rad2deg(r) { return r * 180 / Math.PI; }
+
+function destinationPoint(lat, lon, bearingDeg, distanceKm) {
+    const R = 6371;
+    const δ = distanceKm / R;
+    const θ = deg2rad(bearingDeg);
+    const φ1 = deg2rad(lat);
+    const λ1 = deg2rad(lon);
+    const φ2 = Math.asin(Math.sin(φ1) * Math.cos(δ) + Math.cos(φ1) * Math.sin(δ) * Math.cos(θ));
+    const λ2 = λ1 + Math.atan2(Math.sin(θ) * Math.sin(δ) * Math.cos(φ1), Math.cos(δ) - Math.sin(φ1) * Math.sin(φ2));
+    return { lat: rad2deg(φ2), lon: ((rad2deg(λ2) + 540) % 360) - 180 };
+}
+
+function predictTsunamiRisk(lat, lon, opts = {}) {
+    const stepKm = opts.stepKm || 25;
+    const maxDistanceKm = opts.maxDistanceKm || 6000;
+    const bearings = opts.bearings || 48;
+    const results = [];
+    for (let i = 0; i < bearings; i++) {
+        const bearing = i * (360 / bearings);
+        let d = stepKm;
+        let foundLand = null;
+        while (d <= maxDistanceKm) {
+            const p = destinationPoint(lat, lon, bearing, d);
+            if (!isPointOcean(p.lat, p.lon)) { // Usa nuestra lógica de cuadrícula
+                foundLand = p; 
+                break; 
+            }
+            d += stepKm;
+        }
+        if (foundLand) results.push({ bearing, coastPoint: foundLand, distanceKm: d });
+    }
+    results.sort((a, b) => a.distanceKm - b.distanceKm);
+    return results;
 }

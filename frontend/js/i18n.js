@@ -63,9 +63,15 @@ const translations = {
         "impact_crater_diameter": "Crater Diameter:",
         "impact_summary": "Summary:",
         "impact_no_data": "No simulation data available.",
-        "impact_marker_info": "Click on the marker to see impact details."
-
-
+        "impact_marker_info": "Click on the marker to see impact details.", 
+        "mitigation_visual_title": "Visual Mitigation Strategies",
+        "mitigation_visual_subtitle": "Click on a strategy",
+        "mitigation_kinetic_title": "Nuclear Explosion",
+        "mitigation_kinetic_desc": "This strategy proposes detonating a nuclear device near an asteroid. The burst of radiation and thermal energy vaporizes part of the asteroid’s surface, creating a thrusting force. This “nuclear ablation” alters the object's trajectory enough to deflect it from a collision course with Earth",
+        "mitigation_gravity_title": "Gravity Tractor",
+        "mitigation_gravity_desc": "This is a non-contact technique where a massive spacecraft (the gravity tractor) is placed close to the asteroid. The mutual gravitational pull applies a constant, gentle, and highly controlled force on the asteroid. This gradual force, acting over a long period, slowly and safely modifies the object's orbit. It is ideal for long-term threats and for asteroids with unknown or fragile structures.",
+        "mitigation_laser_title": "Kinetic Impactor Deflection",
+        "mitigation_laser_desc": "This method involves intentionally crashing a spacecraft (the kinetic impactor) into the asteroid at high speed. The goal is to transfer momentum and slightly alter the object's velocity. Given enough lead time (years before impact), this small nudge changes the asteroid's trajectory enough to make it miss Earth. It is the most mature technique and was successfully tested by the DART mission."
 
     },
     es: {
@@ -131,7 +137,15 @@ const translations = {
         "impact_crater_diameter": "Diámetro del Cráter:",
         "impact_summary": "Resumen:",
         "impact_no_data": "No hay datos de simulación disponibles.",
-        "impact_marker_info": "Haz clic en el marcador para ver los detalles del impacto."
+        "impact_marker_info": "Haz clic en el marcador para ver los detalles del impacto.", 
+        "mitigation_visual_title": "Estrategias de Mitigación Visuales",
+        "mitigation_visual_subtitle": "Haz clic en una estrategia",
+        "mitigation_kinetic_title": "Explosión Nuclear",
+        "mitigation_kinetic_desc": "Esta estrategia propone detonar un dispositivo nuclear cerca de un asteroide. El estallido de radiación y energía térmica vaporiza parte de la superficie del asteroide, creando una fuerza de empuje. Esta 'ablación nuclear' altera la trayectoria del objeto lo suficiente como para desviarlo de un curso de colisión con la Tierra.",
+        "mitigation_gravity_title": "Tractor Gravitacional",
+        "mitigation_gravity_desc": "Esta es una técnica sin contacto donde una nave espacial masiva (el tractor gravitacional) se sitúa cerca del asteroide. La atracción gravitacional mutua aplica una fuerza constante, suave y altamente controlada sobre el asteroide. Esta fuerza gradual, actuando durante un largo período, modifica lenta y seguramente la órbita del objeto. Es ideal para amenazas a largo plazo y para asteroides con estructuras desconocidas o frágiles.",
+        "mitigation_laser_title": "Desvío por Impactador Cinético",
+        "mitigation_laser_desc": "Este método implica estrellar intencionadamente una nave espacial (el impactador cinético) contra el asteroide a alta velocidad. El objetivo es transferir momento y alterar ligeramente la velocidad del objeto. Con suficiente tiempo de antelación (años antes del impacto), este pequeño empujón cambia la trayectoria del asteroide lo suficiente como para que evite la Tierra. Es la técnica más madura y fue probada con éxito por la misión DART."
 
     }
 };

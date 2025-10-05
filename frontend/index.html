@@ -3,20 +3,28 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title data-i18n="app_title">Meteor Madness</title>
-    <link rel="stylesheet" href="css/styles.css">
+    <title>Meteor Madness</title>
+<link rel="icon" type="image/png" href="images/favicon.png">
+<link rel="stylesheet" href="css/styles.css">
 </head>
 <body>
     <header>
-        <span id="mm">
+        <div id="mm" class="title-wrapper">
             <p id="mmm" data-i18n="app_title">Meteor Madness</p>
-        </span>
+            <div class="title-sparks" aria-hidden="true">
+                <span class="spark"></span>
+                <span class="spark"></span>
+                <span class="spark"></span>
+                <span class="spark"></span>
+                <span class="spark"></span>
+            </div>
+        </div>
         <nav>
             <ul id="nav-menu">
-                <li><a href="#" class="active" data-view="earth" data-i18n="nav_earth">Tierra</a></li>
-                <li><a href="#" data-view="asteroids" data-i18n="nav_asteroids">Asteroides</a></li>
-                <li><a href="#" data-view="simulation" data-i18n="nav_simulation">Simulación de Impacto</a></li>
-                <li><a href="#" data-view="mitigation" data-i18n="nav_mitigation">Mitigación</a></li>
+                <li><a href="#" class="active" data-view="earth" data-i18n="nav_earth">Earth</a></li>
+                <li><a href="#" data-view="asteroids" data-i18n="nav_asteroids">Asteroids</a></li>
+                <li><a href="#" data-view="simulation" data-i18n="nav_simulation">Impact Simulation</a></li>
+                <li><a href="#" data-view="mitigation" data-i18n="nav_mitigation">Mitigation</a></li>
             </ul>
         </nav>
         <div id="language-selector">
@@ -26,86 +34,86 @@
     </header>
 
     <main>
-        <!-- Vista 1: Tierra Principal -->
+        <!-- View 1: Main Earth -->
         <div id="earth-view" class="view active">
             <div id="earth-canvas"></div>
         </div>
 
-        <!-- Vista 2: Asteroides -->
+        <!-- View 2: Asteroids -->
         <div id="asteroids-view" class="view">
             <div class="asteroids-content-wrapper">
-                <!-- Columna Izquierda -->
+                <!-- Left Column -->
                 <div class="asteroids-list-column">
-                    <h2 data-i18n="asteroids_title">Asteroides Cercanos a la Tierra</h2>
+                    <h2 data-i18n="asteroids_title">Near-Earth Asteroids</h2>
                     <div class="search-container">
                         <input type="date" id="search-date">
-                        <input type="text" id="search-name" placeholder="Buscar por nombre..." data-i18n="search_name_placeholder">
-                        <input type="number" id="search-diameter" placeholder="Diámetro mínimo (m)..." data-i18n="search_diameter_placeholder">
-                        <button id="search-asteroids" data-i18n="search_button">Buscar</button>
+                        <input type="text" id="search-name" placeholder="Search by name..." data-i18n="search_name_placeholder">
+                        <input type="number" id="search-diameter" placeholder="Minimum diameter (m)..." data-i18n="search_diameter_placeholder">
+                        <button id="search-asteroids" data-i18n="search_button">Search</button>
                     </div>
                     <div id="asteroids-list">
-                        <p data-i18n="asteroids_list_msg">Usa los filtros y haz clic en "Buscar" para cargar los asteroides.</p>
+                        <p data-i18n="asteroids_list_msg">Use the filters and click 'Search' to load asteroids.</p>
                     </div>
                 </div>
 
-                <!-- Columna Derecha -->
+                <!-- Right Column -->
                 <div class="create-asteroid-column">
                     <div class="create-asteroid">
-                        <h3 data-i18n="create_asteroid_title">Crear Asteroide Personalizado</h3>
+                        <h3 data-i18n="create_asteroid_title">Create Custom Asteroid</h3>
                         <form id="create-asteroid-form">
                             <div class="form-group">
-                                <label for="asteroid-name" data-i18n="asteroid_name">Nombre:</label>
+                                <label for="asteroid-name" data-i18n="asteroid_name">Name:</label>
                                 <input type="text" id="asteroid-name" required>
                             </div>
                             <div class="form-group">
-                                <label for="asteroid-diameter" data-i18n="asteroid_diameter">Diámetro (m):</label>
+                                <label for="asteroid-diameter" data-i18n="asteroid_diameter">Diameter (m):</label>
                                 <input type="number" id="asteroid-diameter" required>
                             </div>
                             <div class="form-group">
-                                <label for="asteroid-velocity" data-i18n="asteroid_velocity">Velocidad (km/s):</label>
+                                <label for="asteroid-velocity" data-i18n="asteroid_velocity">Velocity (km/s):</label>
                                 <input type="number" id="asteroid-velocity" required>
                             </div>
                             <div class="form-group">
-                                <label for="asteroid-risk" data-i18n="asteroid_risk">Nivel de riesgo:</label>
+                                <label for="asteroid-risk" data-i18n="asteroid_risk">Risk level:</label>
                                 <select id="asteroid-risk" required>
-                                    <option value="bajo" data-i18n="risk_low">Bajo</option>
-                                    <option value="medio" data-i18n="risk_medium">Medio</option>
-                                    <option value="alto" data-i18n="risk_high">Alto</option>
+                                    <option value="bajo" data-i18n="risk_low">Low</option>
+                                    <option value="medio" data-i18n="risk_medium">Medium</option>
+                                    <option value="alto" data-i18n="risk_high">High</option>
                                 </select>
                             </div>
-                            <button type="submit" data-i18n="create_button">Crear</button>
+                            <button type="submit" data-i18n="create_button">Create</button>
                         </form>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- Vista 3: Simulación de Impacto -->
+        <!-- View 3: Impact Simulation -->
         <div id="simulation-view" class="view">
             <div class="simulation-container">
                 <div class="controls-column">
-                    <h2 data-i18n="simulation_title">Simulación de Impacto</h2>
+                    <h2 data-i18n="simulation_title">Impact Simulation</h2>
 
                     <div class="control-group">
-                        <h3 data-i18n="select_asteroid">Seleccionar Asteroide</h3> <br/>
+                        <h3 data-i18n="select_asteroid">Select Asteroid</h3> <br/>
                         <select id="asteroid-select">
-                            <option value="" id="lista" data-i18n="select_asteroid_prompt">Selecciona un asteroide...</option>
+                            <option value="" id="lista" data-i18n="select_asteroid_prompt">Select an asteroid...</option>
                         </select>
                     </div>
 
-                    <button id="run-simulation" disabled data-i18n="run_simulation">Ejecutar Simulación</button>
+                    <button id="run-simulation" disabled data-i18n="run_simulation">Run Simulation</button>
                     <div id="simulation-results"></div>
                 </div>
 
                 <div class="controls-column">
                     <div class="control-group">
-                        <h3 data-i18n="select_coordinates">Seleccionar Coordenadas</h3> <br/>
-                        <p data-i18n="select_coords_instruction">Haz clic en el globo o introduce las coordenadas:</p> <br/>
-                        <input type="text" id="lat-input" placeholder="Latitud (Ej: 40.71)" data-i18n="lat_placeholder">
+                        <h3 data-i18n="select_coordinates">Select Coordinates</h3> <br/>
+                        <p data-i18n="select_coords_instruction">Click on the globe </p> <br/>
+                        <input type="text" id="lat-input" placeholder="Latitude (Ex: 40.71)" data-i18n="lat_placeholder" readonly>
                         <br/> <br/>
-                        <input type="text" id="lon-input" placeholder="Longitud (Ej: -74.00)" data-i18n="lon_placeholder">
+                        <input type="text" id="lon-input" placeholder="Longitude (Ex: -74.00)" data-i18n="lon_placeholder" readonly>
                         <br/> <br/>
-                        <button id="set-coords-btn" data-i18n="set_coords_button">Usar Coordenadas</button>
+                        <button id="set-coords-btn" data-i18n="set_coords_button" >Use Coordinates</button>
                     </div>
                 </div>
 
@@ -115,15 +123,87 @@
             </div>
         </div>
 
-        <!-- Vista 4: Mitigación -->
-        <div id="mitigation-view" class="view">
-            <h2 data-i18n="mitigation_title">Estrategias de Mitigación</h2>
+<!-- View 4: Mitigation -->
+<div id="mitigation-view" class="view">
+    <div class="video-options-section">
+        <h2 data-i18n="mitigation_visual_title">Mitigation Strategies</h2>
+        <p style="text-align: center; margin-bottom: 2rem; color: #a0a0b0;" data-i18n="mitigation_visual_subtitle">
+            Click on a strategy
+        </p>
+
+        <div class="options-grid">
+            <div class="option-card">
+                <div class="option-content">
+                    <button class="play-video-btn" data-video-src="NuclearExplosionVideo.mp4"  data-video-loop>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
+                        <span data-i18n="mitigation_kinetic_title">Nuclear Explosion</span>
+                    </button>
+                    <div class="option-description">
+                        <p data-i18n="mitigation_kinetic_desc">
+                            This strategy proposes detonating a nuclear device near an asteroid. 
+                            The burst of radiation and thermal energy vaporizes part of the asteroid’s surface, creating a thrusting force. 
+                            This “nuclear ablation” alters the object's trajectory enough to deflect it from a collision course with Earth
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="option-card">
+                <div class="option-content">
+                    <button class="play-video-btn" data-video-src="GravitacionalTractorVideo.mp4"  data-video-loop>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
+                        <span data-i18n="mitigation_gravity_title">Gravity Tractor</span>
+                    </button>
+                    <div class="option-description">
+                        <p data-i18n="mitigation_gravity_desc">
+                            This is a non-contact technique where a massive spacecraft (the gravity tractor) is placed close to the asteroid.
+                            The mutual gravitational pull applies a constant, gentle, and highly controlled force on the asteroid. 
+                            This gradual force, acting over a long period, slowly and safely modifies the object's orbit. 
+                            It is ideal for long-term threats and for asteroids with unknown or fragile structures.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="option-card">
+                <div class="option-content">
+                    <button class="play-video-btn" data-video-src="KinectDesviationVideos.mp4"  data-video-loop>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
+                        <span data-i18n="mitigation_laser_title">Kinetic Impactor Deflection</span>
+                    </button>
+                    <div class="option-description">
+                        <p data-i18n="mitigation_laser_desc">
+                            This method involves intentionally crashing a spacecraft (the kinetic impactor) into the asteroid at high speed. 
+                            The goal is to transfer momentum and slightly alter the object's velocity. 
+                            Given enough lead time (years before impact), this small nudge changes the asteroid's trajectory enough to make it miss Earth. 
+                            It is the most mature technique and was successfully tested by the DART mission.
+                        </p>
+                    </div>
+                </div>
+            </div>
         </div>
+    </div>
+</div>
+
+<!-- Modal para mostrar el video (colócalo al final de tu <body> si es posible) -->
+<div id="video-modal" class="video-modal-overlay">
+    <div class="video-modal-content">
+        <span class="close-modal-btn">&times;</span>
+        <div id="video-player-container"></div>
+    </div>
+</div>
     </main>
 
     <footer>
         <p data-i18n="footer_text">2025 Meteor Madness - SpaceLights</p>
     </footer>
+
+    <div id="video-overlay" class="video-overlay">
+        <video id="secret-video" playsinline>
+            <source src="VideoEspecial.mp4" type="video/mp4">
+            Tu navegador no soporta la etiqueta de video.
+        </video>
+    </div>
 
     <!-- Scripts -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>

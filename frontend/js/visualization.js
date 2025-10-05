@@ -11,6 +11,7 @@ function initEarthVisualization() {
     
     renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
     renderer.setSize(container.clientWidth, container.clientHeight);
+    renderer.setClearColor(0x000000, 1);
     container.appendChild(renderer.domElement);
     
     controls = new THREE.OrbitControls(camera, renderer.domElement);
@@ -39,34 +40,68 @@ function initEarthVisualization() {
 
 function createEarthAndStars() {
     const textureLoader = new THREE.TextureLoader();
+    try { textureLoader.crossOrigin = 'anonymous'; } catch(e) { }
+
+    /**
+     * Crea una textura de estrellas dibujando puntos aleatorios en un canvas.
+     * @param {number} width - Ancho del canvas.
+     * @param {number} height - Alto del canvas.
+     * @param {number} starCount - Número de estrellas a dibujar.
+     * @returns {THREE.CanvasTexture} - La textura lista para usar en Three.js.
+     */
+    function createProceduralStarTexture(width = 2048, height = 1024, starCount = 1200) {
+        const canvas = document.createElement('canvas');
+        canvas.width = width;
+        canvas.height = height;
+        const ctx = canvas.getContext('2d');
+        
+        // Fondo negro
+        ctx.fillStyle = '#000';
+        ctx.fillRect(0, 0, width, height);
+        
+        // Dibujar estrellas
+        for (let i = 0; i < starCount; i++) {
+            const x = Math.random() * width;
+            const y = Math.random() * height;
+            const r = Math.random() * 0.8; // Radio pequeño para las estrellas
+            const alpha = 0.6 + Math.random() * 0.4; // Opacidad variable
+            
+            ctx.beginPath();
+            ctx.fillStyle = `rgba(255,255,255,${alpha})`;
+            ctx.arc(x, y, r, 0, Math.PI * 2);
+            ctx.fill();
+        }
+        return new THREE.CanvasTexture(canvas);
+    }
     
+    // --- CREACIÓN DE LA TIERRA (sin cambios) ---
     const geometry = new THREE.SphereGeometry(2, 64, 64);
     const material = new THREE.MeshPhongMaterial({
         map: textureLoader.load('https://threejs.org/examples/textures/planets/earth_atmos_2048.jpg'),
         specularMap: textureLoader.load('https://threejs.org/examples/textures/planets/earth_specular.jpg'),
-        shininess: 10
+        shininess: 20
     });
     earth = new THREE.Mesh(geometry, material);
     scene.add(earth);
     
-    // --- CÓDIGO PARA LAS ESTRELLAS ---
-    const starGeometry = new THREE.SphereGeometry(500, 64, 64);
-    const starMaterial = new THREE.MeshBasicMaterial({
-        map: textureLoader.load('https://www.solarsystemscope.com/textures/download/2k_stars.jpg'),
-        side: THREE.BackSide
-    });
-    const stars = new THREE.Mesh(starGeometry, starMaterial);
-    scene.add(stars);
-}
+    try {
+        const starTexture = createProceduralStarTexture(2048, 1024, 1400);
+        
+        starTexture.mapping = THREE.EquirectangularReflectionMapping;
+        
+        scene.background = starTexture;
 
+    } catch (e) {
+        console.error("No se pudo crear el fondo de estrellas procedimental:", e);
+        
+    }
+}
 function animateMainView() {
     requestAnimationFrame(animateMainView);
     if (controls) controls.update();
     if (renderer) renderer.render(scene, camera);
 }
-/**
- * Se ejecuta cuando la ventana del navegador cambia de tamaño.
- */
+
 function onWindowResize() {
     const container = document.getElementById('earth-canvas');
     if (camera && renderer && container) {

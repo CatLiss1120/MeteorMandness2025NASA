@@ -40,6 +40,8 @@ document.addEventListener('DOMContentLoaded', () => {
             runImpactSimulationAnimation();
         }
     });
+    
+    setupVideoModal(); 
 });
 
 async function handleSearch() {
@@ -73,17 +75,39 @@ function displayAsteroids(asteroids) {
     const asteroidsListContainer = document.getElementById('asteroids-list');
     asteroidsListContainer.innerHTML = '';
     window.asteroidsForSimulation = {};
+
+    const defaultImpactor = {
+        name: 'Impactor 2025',
+        diameter: 150,
+        velocity: 300,
+        is_potentially_hazardous_asteroid: true,
+        riesgo: 'alto',
+        custom: true 
+    };
+    window.asteroidsForSimulation[defaultImpactor.name] = defaultImpactor;
+    addAsteroidToListHTML(defaultImpactor);
+
     if (!asteroids || asteroids.length === 0) {
-        asteroidsListContainer.innerHTML = `<p>No se encontraron asteroides para los filtros seleccionados.</p>`;
+        if (Object.keys(window.asteroidsForSimulation).length === 1) { 
+            asteroidsListContainer.insertAdjacentHTML('beforeend', `<p>No se encontraron otros asteroides para los filtros seleccionados.</p>`);
+        } else {
+            asteroidsListContainer.innerHTML = `<p>No se encontraron asteroides para los filtros seleccionados.</p>`;
+        }
+        updateAsteroidSelect();
         return;
     }
+
     asteroids.forEach(asteroidData => {
         const diameter = Math.round(asteroidData.estimated_diameter?.meters?.estimated_diameter_max) || asteroidData.diameter || 'Desconocido';
         const velocity = parseFloat(asteroidData.close_approach_data?.[0]?.relative_velocity?.kilometers_per_second).toFixed(2) || asteroidData.velocity || 'Desconocido';
         const asteroid = { name: asteroidData.name, diameter, velocity, is_potentially_hazardous_asteroid: asteroidData.is_potentially_hazardous_asteroid, riesgo: asteroidData.riesgo, custom: asteroidData.custom };
-        window.asteroidsForSimulation[asteroid.name] = asteroid;
-        addAsteroidToListHTML(asteroid);
+        
+        if (!window.asteroidsForSimulation[asteroid.name]) {
+            window.asteroidsForSimulation[asteroid.name] = asteroid;
+            addAsteroidToListHTML(asteroid);
+        }
     });
+
     updateAsteroidSelect();
 }
 
@@ -212,6 +236,116 @@ document.getElementById('lang-es').addEventListener('click', () => {
     updateImpactInfo(window.selectedAsteroid);
 });
 
+function setupVideoModal() {
+    const VIDEO_FOLDER_PATH = '../backend/videos/';
+    const playButtons = document.querySelectorAll('.play-video-btn');
+    const modal = document.getElementById('video-modal');
+    const closeModalBtn = document.querySelector('.close-modal-btn');
+    const videoContainer = document.getElementById('video-player-container');
 
-// Exportar para uso en otros scripts
+    if (!modal || !playButtons.length || !closeModalBtn || !videoContainer) {
+        console.error('Faltan elementos del modal en el DOM.');
+        return;
+    }
+    
+    const openModal = (videoSrc, shouldLoop) => {
+        videoContainer.innerHTML = '';
+        const videoElement = document.createElement('video');
+        videoElement.src = videoSrc;
+        videoElement.controls = true;
+        videoElement.autoplay = true;
+        videoElement.setAttribute('playsinline', '');
+        if (shouldLoop) {
+            videoElement.loop = true;
+        }
+        videoContainer.appendChild(videoElement);
+        modal.classList.add('visible');
+    };
+    
+    const closeModal = () => {
+        modal.classList.remove('visible');
+        videoContainer.innerHTML = '';
+    };
+
+    playButtons.forEach(button => {
+        button.addEventListener('click', () => {
+            const videoFileName = button.getAttribute('data-video-src');
+            const wantsLoop = button.hasAttribute('data-video-loop');
+            if (videoFileName) {
+                const fullVideoPath = VIDEO_FOLDER_PATH + videoFileName;
+                openModal(fullVideoPath, wantsLoop);
+            } else {
+                console.warn('El botón no tiene el atributo data-video-src.');
+            }
+        });
+    });
+
+    closeModalBtn.addEventListener('click', closeModal);
+    modal.addEventListener('click', (event) => {
+        if (event.target === modal) closeModal();
+    });
+    document.addEventListener('keydown', (event) => {
+        if (event.key === 'Escape' && modal.classList.contains('visible')) closeModal();
+    });
+}
+
+
+function setupTripleClickVideo(triggerElementId, videoOverlayId, videoElementId) {
+    const triggerElement = document.getElementById(triggerElementId);
+    const videoOverlay = document.getElementById(videoOverlayId);
+    const video = document.getElementById(videoElementId);
+
+    if (!triggerElement || !videoOverlay || !video) {
+        console.error("Easter Egg: No se encontraron los elementos del DOM. Revisa los IDs.");
+        return;
+    }
+
+    let clickCount = 0;
+    let clickTimer = null;
+
+    const playFullScreenVideo = () => {
+        videoOverlay.style.display = 'flex';
+        if (videoOverlay.requestFullscreen) {
+            videoOverlay.requestFullscreen().catch(err => {
+                console.warn(`No se pudo entrar en pantalla completa: ${err.message}`);
+            });
+        }
+        video.play().catch(error => {
+            console.error("El video no se pudo reproducir.", error);
+        });
+    };
+
+    const stopAndHideVideo = () => {
+        video.pause();
+        video.currentTime = 0;
+        videoOverlay.style.display = 'none';
+        if (document.fullscreenElement) {
+            document.exitFullscreen();
+        }
+    };
+
+    triggerElement.addEventListener('click', () => {
+        clickCount++;
+        if (clickTimer) {
+            clearTimeout(clickTimer);
+        }
+        if (clickCount === 3) {
+            playFullScreenVideo();
+            clickCount = 0;
+        } else {
+            clickTimer = setTimeout(() => {
+                clickCount = 0;
+            }, 500); 
+        }
+    });
+
+    document.addEventListener('fullscreenchange', () => {
+        if (!document.fullscreenElement && videoOverlay.style.display === 'flex') {
+            stopAndHideVideo();
+        }
+    });
+}
+
+setupTripleClickVideo('mm', 'video-overlay', 'secret-video');
+
 window.changeLanguage = changeLanguage;

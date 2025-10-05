@@ -11,7 +11,7 @@ async function searchAsteroidsFromApi() {
     const name = document.getElementById('search-name').value.trim();
     const diameter = document.getElementById('search-diameter').value.trim();
 
-    let url = `http://localhost:5000/api/asteroids?date=${date}`;
+    let url = `http://localhost:5000/api/asteroids?date=${date}`; //CUANDO SE VEA PARA TODOS CORREGIR ESTO 
     if (name) url += `&name=${encodeURIComponent(name)}`;
     if (diameter) url += `&diameter=${encodeURIComponent(diameter)}`;
 
