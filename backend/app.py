@@ -6,13 +6,13 @@ from nasa_api import get_asteroids_by_date
 from orbit_calculator import calculate_orbit_parameters
 from impact_simulator import simulate_impact
 
-# Cargar variables de entorno
+# Carga las variables de entorno desde el archivo .env
 load_dotenv()
 
 app = Flask(__name__)
-CORS(app)  # Habilitar CORS para todas las rutas
+CORS(app)  # Permite solicitudes desde cualquier origen (necesario para el frontend)
 
-# Ruta para servir archivos estáticos del frontend
+# Sirve los archivos estáticos del frontend
 @app.route('/', defaults={'path': ''})
 @app.route('/<path:path>')
 def serve_frontend(path):
@@ -21,51 +21,61 @@ def serve_frontend(path):
     else:
         return send_from_directory('../frontend', 'index.html')
 
-# API para obtener asteroides por fecha
+# Endpoint para obtener asteroides según la fecha indicada
 @app.route('/api/asteroids', methods=['GET'])
 def get_asteroids():
     date = request.args.get('date')
     name = request.args.get('name', '').lower()
     diameter = request.args.get('diameter', '').strip()
     type_ = request.args.get('type', '').strip().lower()
+
     if not date:
         return jsonify({'error': 'Se requiere una fecha'}), 400
 
     try:
         asteroids = get_asteroids_by_date(date)
-        # Filtrar por nombre si se proporciona
+
+        # Filtra por nombre si se proporciona
         if name:
             asteroids = [a for a in asteroids if name in a.get('name', '').lower()]
-        # Filtrar por diámetro si se proporciona
+
+        # Filtra por diámetro si se proporciona
         if diameter:
             try:
                 diameter_val = float(diameter)
-                asteroids = [a for a in asteroids if 'estimated_diameter' in a and 'meters' in a['estimated_diameter'] and a['estimated_diameter']['meters']['estimated_diameter_max'] >= diameter_val]
+                asteroids = [
+                    a for a in asteroids
+                    if 'estimated_diameter' in a
+                    and 'meters' in a['estimated_diameter']
+                    and a['estimated_diameter']['meters']['estimated_diameter_max'] >= diameter_val
+                ]
             except ValueError:
                 pass
-        # Filtrar por tipo si se proporciona
+
+        # Filtra por tipo si se proporciona
         if type_:
             def get_type(a):
-                # Si el asteroide tiene composición, usarla; si no, asignar por heurística
-                comp = a.get('composition', None)
+                comp = a.get('composition')
                 if comp:
                     return comp.lower()
-                # Heurística: si el nombre contiene "metal", "ice", etc.
                 n = a.get('name', '').lower()
                 if 'metal' in n:
                     return 'metallic'
                 if 'ice' in n or 'icy' in n:
                     return 'icy'
                 return 'rocky'
+
             asteroids = [a for a in asteroids if get_type(a) == type_]
+
         return jsonify({
             'count': len(asteroids),
             'asteroids': asteroids
         })
+
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
-# API para calcular parámetros orbitales
+# Endpoint para calcular parámetros orbitales de un asteroide
 @app.route('/api/orbit', methods=['POST'])
 def calculate_orbit():
     data = request.json
@@ -78,7 +88,7 @@ def calculate_orbit():
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
-# API para simular impacto
+# Endpoint para simular el impacto de un asteroide
 @app.route('/api/impact', methods=['POST'])
 def calculate_impact():
     data = request.json
@@ -91,18 +101,17 @@ def calculate_impact():
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
-# API para guardar un asteroide personalizado
+# Endpoint para registrar un asteroide personalizado
 @app.route('/api/asteroids/custom', methods=['POST'])
 def save_custom_asteroid():
     data = request.json
     if not data:
         return jsonify({'error': 'Se requieren datos del asteroide'}), 400
     
-    # En una implementación real, aquí se guardarían los datos en una base de datos
-    # Por ahora, simplemente devolvemos los datos recibidos
-    # Agregar campo de nivel de riesgo si no existe
+    # En esta versión no se guarda en base de datos, solo se devuelve la información recibida
     if 'riesgo' not in data:
-        data['riesgo'] = 'desconocido'  # Puede ser: bajo, medio, alto, desconocido
+        data['riesgo'] = 'desconocido'  # Puede ser: bajo, medio, alto o desconocido
+
     return jsonify({
         'success': True,
         'asteroid': data,
@@ -110,7 +119,7 @@ def save_custom_asteroid():
     })
 
 if __name__ == '__main__':
-    # Obtener puerto del entorno o usar 5000 por defecto
+    # Obtiene el puerto desde las variables de entorno o usa 5000 por defecto
     port = int(os.environ.get('PORT', 5000))
-    # Ejecutar la aplicación
+    # Inicia el servidor Flask
     app.run(host='0.0.0.0', port=port, debug=True)
