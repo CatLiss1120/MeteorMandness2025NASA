@@ -1,18 +1,13 @@
-// Sistema de internacionalización para Meteor Madness
+
 const translations = {
     en: {
-        // Navegación
         "nav_earth": "Earth",
         "nav_asteroids": "Asteroids",
         "nav_simulation": "Impact Simulation",
         "nav_mitigation": "Mitigation",
-        
-        // Controles de visualización
         "toggle_view": "2D/3D View",
         "zoom_in": "+",
         "zoom_out": "-",
-        
-        // Vista de asteroides
         "asteroids_title": "Near-Earth Asteroids",
         "search_button": "Search",
         "create_asteroid_title": "Create Custom Asteroid",
@@ -24,52 +19,63 @@ const translations = {
         "composition_metallic": "Metallic",
         "composition_icy": "Icy",
         "create_button": "Create",
-        
-        // Vista de simulación
         "simulation_title": "Impact Simulation",
         "select_asteroid": "Select Asteroid",
         "select_asteroid_prompt": "Select an asteroid...",
         "impact_location": "Impact Location",
         "impact_location_prompt": "Click on the map to select the impact location",
         "run_simulation": "Run Simulation",
-        
-        // Resultados de simulación
-        "impact_energy": "Impact Energy",
-        "crater_size": "Crater Size",
-        "blast_radius": "Blast Radius",
-        "casualties": "Estimated Casualties",
-        "infrastructure_damage": "Infrastructure Damage",
-        
-        // Vista de mitigación
         "mitigation_title": "Mitigation Strategies",
-        "kinetic_title": "Kinetic Impactor",
-        "kinetic_desc": "Impact the asteroid with a spacecraft to change its trajectory.",
-        "gravity_title": "Gravity Tractor",
-        "gravity_desc": "Use a spacecraft's gravity to slowly alter the asteroid's orbit.",
-        "nuclear_title": "Nuclear Explosion",
-        "nuclear_desc": "Detonate a nuclear device near the asteroid to change its course.",
-        "apply_button": "Apply",
-        
-        // Menú de usuario
         "user_menu_title": "User Menu",
-        "menu_impact-2025": "Simulate Impact (Impact-2025)",
-        "menu_create-asteroid": "Create an asteroid and simulate its impact",
-        "menu_mitigation": "Mitigation Strategy",
-        "menu_other-asteroids": "Test other asteroids"
+        "label_diameter": "Estimated diameter:",
+        "label_velocity": "Relative velocity:",
+        "label_risk": "Risk:",
+        "label_simulate": "Simulate Impact", 
+        "app_title": "Meteor Madness",
+        "lang_en": "EN",
+        "lang_es": "ES",
+        "search_name_placeholder": "Search by name...",
+        "search_diameter_placeholder": "Minimum diameter (m)...",
+        "asteroids_list_msg": "Use the filters and click 'Search' to load the asteroids.",
+        "asteroid_risk": "Risk level:",
+        "risk_low": "Low",
+        "risk_medium": "Medium",
+        "risk_high": "High",
+        "select_coordinates": "Select Coordinates",
+        "select_coords_instruction": "Click on the globe or enter the coordinates:",
+        "lat_placeholder": "Latitude (e.g., 40.71)",
+        "lon_placeholder": "Longitude (e.g., -74.00)",
+        "set_coords_button": "Use Coordinates",
+        "footer_text": "2025 Meteor Madness - SpaceLights", 
+        "impact_no_selection": "Select an asteroid and coordinates to simulate the impact.",
+        "label_asteroid": "Asteroid:",
+        "label_diameter": "Diameter:",
+        "label_velocity": "Velocity:",
+        "label_risk": "Risk Level:",
+        "label_impact_location": "Impact Location:",
+        "label_latitude": "Latitude:",
+        "label_longitude": "Longitude:",
+        "risk_unknown": "Unknown",
+        "error_invalid_coordinates": "Invalid coordinates. Please enter numeric values.",
+        "impact_results_title": "Impact Results",
+        "impact_energy": "Impact Energy:",
+        "impact_damage_radius": "Damage Radius:",
+        "impact_crater_diameter": "Crater Diameter:",
+        "impact_summary": "Summary:",
+        "impact_no_data": "No simulation data available.",
+        "impact_marker_info": "Click on the marker to see impact details."
+
+
+
     },
     es: {
-        // Navegación
         "nav_earth": "Tierra",
         "nav_asteroids": "Asteroides",
         "nav_simulation": "Simulación de Impacto",
         "nav_mitigation": "Mitigación",
-        
-        // Controles de visualización
         "toggle_view": "Vista 2D/3D",
         "zoom_in": "+",
         "zoom_out": "-",
-        
-        // Vista de asteroides
         "asteroids_title": "Asteroides Cercanos a la Tierra",
         "search_button": "Buscar",
         "create_asteroid_title": "Crear Asteroide Personalizado",
@@ -81,142 +87,162 @@ const translations = {
         "composition_metallic": "Metálico",
         "composition_icy": "Helado",
         "create_button": "Crear",
-        
-        // Vista de simulación
         "simulation_title": "Simulación de Impacto",
         "select_asteroid": "Seleccionar Asteroide",
         "select_asteroid_prompt": "Selecciona un asteroide...",
         "impact_location": "Ubicación de Impacto",
         "impact_location_prompt": "Haz clic en el mapa para seleccionar la ubicación del impacto",
         "run_simulation": "Ejecutar Simulación",
-        
-        // Resultados de simulación
-        "impact_energy": "Energía de Impacto",
-        "crater_size": "Tamaño del Cráter",
-        "blast_radius": "Radio de Explosión",
-        "casualties": "Víctimas Estimadas",
-        "infrastructure_damage": "Daño a Infraestructura",
-        
-        // Vista de mitigación
         "mitigation_title": "Estrategias de Mitigación",
-        "kinetic_title": "Desviación Cinética",
-        "kinetic_desc": "Impactar el asteroide con una nave espacial para cambiar su trayectoria.",
-        "gravity_title": "Tractor Gravitacional",
-        "gravity_desc": "Usar la gravedad de una nave espacial para alterar lentamente la órbita del asteroide.",
-        "nuclear_title": "Explosión Nuclear",
-        "nuclear_desc": "Detonar un dispositivo nuclear cerca del asteroide para cambiar su curso.",
-        "apply_button": "Aplicar",
-        
-        // Menú de usuario
         "user_menu_title": "Menú de Usuario",
-        "menu_impact-2025": "Simular el impacto (Impacto-2025)",
-        "menu_create-asteroid": "Crear un asteroide y simular su impacto",
-        "menu_mitigation": "Estrategia de mitigación",
-        "menu_other-asteroids": "Probar otros asteroides"
+        "label_diameter": "Diámetro estimado:",
+        "label_velocity": "Velocidad relativa:",
+        "label_risk": "Riesgo:",
+        "label_simulate": "Simular Impacto",
+        "app_title": "Meteor Madness",
+        "lang_en": "EN",
+        "lang_es": "ES",
+        "search_name_placeholder": "Buscar por nombre...",
+        "search_diameter_placeholder": "Diámetro mínimo (m)...",
+        "asteroids_list_msg": "Usa los filtros y haz clic en 'Buscar' para cargar los asteroides.",
+        "asteroid_risk": "Nivel de riesgo:",
+        "risk_low": "Bajo",
+        "risk_medium": "Medio",
+        "risk_high": "Alto",
+        "select_coordinates": "Seleccionar Coordenadas",
+        "select_coords_instruction": "Haz clic en el globo o introduce las coordenadas:",
+        "lat_placeholder": "Latitud (Ej: 40.71)",
+        "lon_placeholder": "Longitud (Ej: -74.00)",
+        "set_coords_button": "Usar Coordenadas",
+        "footer_text": "2025 Meteor Madness - SpaceLights",
+        "impact_no_selection": "Seleccione un asteroide y coordenadas para simular el impacto.",
+        "label_asteroid": "Asteroide:",
+        "label_diameter": "Diámetro:",
+        "label_velocity": "Velocidad:",
+        "label_risk": "Nivel de riesgo:",
+        "label_impact_location": "Ubicación del Impacto:",
+        "label_latitude": "Latitud:",
+        "label_longitude": "Longitud:",
+        "risk_unknown": "Desconocido",
+        "error_invalid_coordinates": "Coordenadas inválidas. Introduce valores numéricos.",
+        "impact_results_title": "Resultados del Impacto",
+        "impact_energy": "Energía del Impacto:",
+        "impact_damage_radius": "Radio de Daño:",
+        "impact_crater_diameter": "Diámetro del Cráter:",
+        "impact_summary": "Resumen:",
+        "impact_no_data": "No hay datos de simulación disponibles.",
+        "impact_marker_info": "Haz clic en el marcador para ver los detalles del impacto."
+
     }
 };
 
-// Función para cambiar el idioma de la aplicación
 function changeLanguage(lang) {
-    // Guardar la preferencia de idioma
+    if (!translations[lang]) {
+        console.warn('Idioma no disponible:', lang);
+        return;
+    }
+
+    window.currentLanguage = lang;
     localStorage.setItem('language', lang);
-    
-    // Obtener todos los elementos con atributos de traducción
-    const elements = document.querySelectorAll('[data-i18n]');
-    
-    // Actualizar el texto de cada elemento
-    elements.forEach(element => {
-        const key = element.getAttribute('data-i18n');
-        if (translations[lang] && translations[lang][key]) {
-            element.textContent = translations[lang][key];
+
+    // 1) Elementos con data-i18n: si es input -> placeholder, si no -> textContent
+    document.querySelectorAll('[data-i18n]').forEach(el => {
+        const key = el.getAttribute('data-i18n');
+        const text = translations[lang][key];
+        if (text === undefined) return; // no hay traducción para esa key
+
+        const tag = el.tagName.toLowerCase();
+        if ((tag === 'input' || tag === 'textarea') && (el.hasAttribute('placeholder') || el.type === 'text' || el.type === 'search' || el.type === 'date' || el.type === 'number')) {
+            el.placeholder = text;
+        } else {
+            el.textContent = text;
         }
     });
-    
-    // Actualizar textos específicos
+
+    // 2) Actualizaciones específicas (seguras: comprueba existencia antes de setear)
     updateSpecificTexts(lang);
+
+    console.log('Idioma cambiado a', lang);
 }
 
-// Actualizar textos específicos que no tienen atributo data-i18n
 function updateSpecificTexts(lang) {
     // Navegación
-    document.querySelector('a[data-view="earth"]').textContent = translations[lang]['nav_earth'];
-    document.querySelector('a[data-view="asteroids"]').textContent = translations[lang]['nav_asteroids'];
-    document.querySelector('a[data-view="simulation"]').textContent = translations[lang]['nav_simulation'];
-    document.querySelector('a[data-view="mitigation"]').textContent = translations[lang]['nav_mitigation'];
-    
-    // Botones y títulos
-    document.getElementById('toggle-view').textContent = translations[lang]['toggle_view'];
-    document.getElementById('zoom-in').textContent = translations[lang]['zoom_in'];
-    document.getElementById('zoom-out').textContent = translations[lang]['zoom_out'];
-    
-    // Menú de usuario
-    document.querySelector('#user-menu h2').textContent = translations[lang]['user_menu_title'];
-    document.querySelectorAll('.menu-option').forEach(option => {
-        const action = option.getAttribute('data-action');
-        if (translations[lang][`menu_${action}`]) {
-            option.textContent = translations[lang][`menu_${action}`];
-        }
-    });
-    
-    // Actualizar placeholder y etiquetas de formularios
-    updateFormLabels(lang);
-}
+    const aEarth = document.querySelector('a[data-view="earth"]');
+    if (aEarth && translations[lang]['nav_earth']) aEarth.textContent = translations[lang]['nav_earth'];
 
-// Actualizar etiquetas de formularios
-function updateFormLabels(lang) {
-    // Formulario de creación de asteroides
+    const aAst = document.querySelector('a[data-view="asteroids"]');
+    if (aAst && translations[lang]['nav_asteroids']) aAst.textContent = translations[lang]['nav_asteroids'];
+
+    const aSim = document.querySelector('a[data-view="simulation"]');
+    if (aSim && translations[lang]['nav_simulation']) aSim.textContent = translations[lang]['nav_simulation'];
+
+    const aMit = document.querySelector('a[data-view="mitigation"]');
+    if (aMit && translations[lang]['nav_mitigation']) aMit.textContent = translations[lang]['nav_mitigation'];
+
+    // Botones y controles
+    const toggle = document.getElementById('toggle-view');
+    if (toggle && translations[lang]['toggle_view']) toggle.textContent = translations[lang]['toggle_view'];
+
+    const zIn = document.getElementById('zoom-in');
+    if (zIn && translations[lang]['zoom_in']) zIn.textContent = translations[lang]['zoom_in'];
+
+    const zOut = document.getElementById('zoom-out');
+    if (zOut && translations[lang]['zoom_out']) zOut.textContent = translations[lang]['zoom_out'];
+
+    // Formularios y placeholders
     if (document.getElementById('create-asteroid-form')) {
-        document.querySelector('#asteroids-view h2').textContent = translations[lang]['asteroids_title'];
-        document.querySelector('.create-asteroid h3').textContent = translations[lang]['create_asteroid_title'];
-        document.querySelector('label[for="asteroid-name"]').textContent = translations[lang]['asteroid_name'];
-        document.querySelector('label[for="asteroid-diameter"]').textContent = translations[lang]['asteroid_diameter'];
-        document.querySelector('label[for="asteroid-velocity"]').textContent = translations[lang]['asteroid_velocity'];
-        document.querySelector('label[for="asteroid-composition"]').textContent = translations[lang]['asteroid_composition'];
-        
-        // Opciones del select
+        const astTitle = document.querySelector('#asteroids-view h2');
+        if (astTitle && translations[lang]['asteroids_title']) astTitle.textContent = translations[lang]['asteroids_title'];
+
+        const createH3 = document.querySelector('.create-asteroid h3');
+        if (createH3 && translations[lang]['create_asteroid_title']) createH3.textContent = translations[lang]['create_asteroid_title'];
+
+        const labName = document.querySelector('label[for="asteroid-name"]');
+        if (labName && translations[lang]['asteroid_name']) labName.textContent = translations[lang]['asteroid_name'];
+
+        const labDiam = document.querySelector('label[for="asteroid-diameter"]');
+        if (labDiam && translations[lang]['asteroid_diameter']) labDiam.textContent = translations[lang]['asteroid_diameter'];
+
+        const labVel = document.querySelector('label[for="asteroid-velocity"]');
+        if (labVel && translations[lang]['asteroid_velocity']) labVel.textContent = translations[lang]['asteroid_velocity'];
+
+        const compLabel = document.querySelector('label[for="asteroid-composition"]');
+        if (compLabel && translations[lang]['asteroid_composition']) compLabel.textContent = translations[lang]['asteroid_composition'];
+
+        // opciones del select de composición (por value)
         const compositionSelect = document.getElementById('asteroid-composition');
-        for (let i = 0; i < compositionSelect.options.length; i++) {
-            const option = compositionSelect.options[i];
-            const value = option.value;
-            if (translations[lang][`composition_${value}`]) {
-                option.textContent = translations[lang][`composition_${value}`];
+        if (compositionSelect) {
+            for (let i = 0; i < compositionSelect.options.length; i++) {
+                const option = compositionSelect.options[i];
+                const value = option.value;
+                const key = `composition_${value}`;
+                if (translations[lang][key]) option.textContent = translations[lang][key];
             }
         }
-        
-        // Botón de crear
-        document.querySelector('#create-asteroid-form button').textContent = translations[lang]['create_button'];
+
+        const createBtn = document.querySelector('#create-asteroid-form button[type="submit"]');
+        if (createBtn && translations[lang]['create_button']) createBtn.textContent = translations[lang]['create_button'];
     }
-    
+
     // Simulación
-    if (document.getElementById('simulation-view')) {
-        document.querySelector('#simulation-view h2').textContent = translations[lang]['simulation_title'];
-        document.querySelector('.asteroid-selection h3').textContent = translations[lang]['select_asteroid'];
-        document.getElementById('run-simulation').textContent = translations[lang]['run_simulation'];
-    }
-    
-    // Mitigación
-    if (document.getElementById('mitigation-view')) {
-        document.querySelector('#mitigation-view h2').textContent = translations[lang]['mitigation_title'];
-    }
+    const simH2 = document.querySelector('#simulation-view h2');
+    if (simH2 && translations[lang]['simulation_title']) simH2.textContent = translations[lang]['simulation_title'];
+
+    const selH3 = document.querySelector('.asteroid-selection h3');
+    if (selH3 && translations[lang]['select_asteroid']) selH3.textContent = translations[lang]['select_asteroid'];
+
+    const runBtn = document.getElementById('run-simulation');
+    if (runBtn && translations[lang]['run_simulation']) runBtn.textContent = translations[lang]['run_simulation'];
+
+    // Traduce placeholders de búsqueda
+    const searchName = document.getElementById('search-name');
+    if (searchName && translations[lang]['select_asteroid_prompt']) searchName.placeholder = translations[lang]['select_asteroid_prompt'];
+
+    // Traducir texto default del option de lista (si existe)
+    const defaultOption = document.getElementById('lista');
+    if (defaultOption && translations[lang]['select_asteroid_prompt']) defaultOption.textContent = translations[lang]['select_asteroid_prompt'];
 }
 
-// Inicializar el idioma al cargar la página
-document.addEventListener('DOMContentLoaded', () => {
-    // Obtener el idioma guardado o usar el predeterminado
-    const savedLang = localStorage.getItem('language') || 'es';
-    
-    // Aplicar el idioma
-    changeLanguage(savedLang);
-    
-    // Activar el botón correspondiente
-    if (savedLang === 'es') {
-        document.getElementById('lang-es').classList.add('active');
-        document.getElementById('lang-en').classList.remove('active');
-    } else {
-        document.getElementById('lang-en').classList.add('active');
-        document.getElementById('lang-es').classList.remove('active');
-    }
-});
-
-// Exportar la función para uso en otros archivos
+// Exportar para uso desde otros scripts
 window.changeLanguage = changeLanguage;
+window.translations = translations;

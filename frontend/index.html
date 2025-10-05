@@ -1,142 +1,137 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Meteor Madness</title>
+    <title data-i18n="app_title">Meteor Madness</title>
     <link rel="stylesheet" href="css/styles.css">
 </head>
 <body>
     <header>
         <span id="mm">
-            <p id="mmm">Meteor Madness</p>
+            <p id="mmm" data-i18n="app_title">Meteor Madness</p>
         </span>
         <nav>
             <ul id="nav-menu">
-                <li><a href="#" class="active" data-view="earth">Tierra</a></li>
-                <li><a href="#" data-view="asteroids">Asteroides</a></li>
-                <li><a href="#" data-view="simulation">Simulación de Impacto</a></li>
-                <li><a href="#" data-view="mitigation">Mitigación</a></li>
+                <li><a href="#" class="active" data-view="earth" data-i18n="nav_earth">Tierra</a></li>
+                <li><a href="#" data-view="asteroids" data-i18n="nav_asteroids">Asteroides</a></li>
+                <li><a href="#" data-view="simulation" data-i18n="nav_simulation">Simulación de Impacto</a></li>
+                <li><a href="#" data-view="mitigation" data-i18n="nav_mitigation">Mitigación</a></li>
             </ul>
         </nav>
         <div id="language-selector">
-            <button id="lang-es" class="active">ES</button>
-            <button id="lang-en">EN</button>
+            <button id="lang-en" class="active" data-i18n="lang_en">EN</button>
+            <button id="lang-es" data-i18n="lang_es">ES</button>
         </div>
     </header>
 
     <main>
-        <!-- Vista 1: Tierra Principal (visible por defecto) -->
+        <!-- Vista 1: Tierra Principal -->
         <div id="earth-view" class="view active">
             <div id="earth-canvas"></div>
         </div>
 
-<!-- Vista 2: Asteroides -->
-<div id="asteroids-view" class="view">
-    <div class="asteroids-content-wrapper">
-        <!-- Columna Izquierda: Lista de Asteroides -->
-        <div class="asteroids-list-column">
-            <h2>Asteroides Cercanos a la Tierra</h2>
-            <div class="search-container">
-                <input type="date" id="search-date">
-                <input type="text" id="search-name" placeholder="Buscar por nombre...">
-                <input type="number" id="search-diameter" placeholder="Diámetro mínimo (m)...">
-                <button id="search-asteroids">Buscar</button>
-            </div>
-            <!-- El contenedor donde se mostrará la lista o los errores -->
-            <div id="asteroids-list">
-                <p>Usa los filtros y haz clic en "Buscar" para cargar los asteroides.</p>
+        <!-- Vista 2: Asteroides -->
+        <div id="asteroids-view" class="view">
+            <div class="asteroids-content-wrapper">
+                <!-- Columna Izquierda -->
+                <div class="asteroids-list-column">
+                    <h2 data-i18n="asteroids_title">Asteroides Cercanos a la Tierra</h2>
+                    <div class="search-container">
+                        <input type="date" id="search-date">
+                        <input type="text" id="search-name" placeholder="Buscar por nombre..." data-i18n="search_name_placeholder">
+                        <input type="number" id="search-diameter" placeholder="Diámetro mínimo (m)..." data-i18n="search_diameter_placeholder">
+                        <button id="search-asteroids" data-i18n="search_button">Buscar</button>
+                    </div>
+                    <div id="asteroids-list">
+                        <p data-i18n="asteroids_list_msg">Usa los filtros y haz clic en "Buscar" para cargar los asteroides.</p>
+                    </div>
+                </div>
+
+                <!-- Columna Derecha -->
+                <div class="create-asteroid-column">
+                    <div class="create-asteroid">
+                        <h3 data-i18n="create_asteroid_title">Crear Asteroide Personalizado</h3>
+                        <form id="create-asteroid-form">
+                            <div class="form-group">
+                                <label for="asteroid-name" data-i18n="asteroid_name">Nombre:</label>
+                                <input type="text" id="asteroid-name" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="asteroid-diameter" data-i18n="asteroid_diameter">Diámetro (m):</label>
+                                <input type="number" id="asteroid-diameter" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="asteroid-velocity" data-i18n="asteroid_velocity">Velocidad (km/s):</label>
+                                <input type="number" id="asteroid-velocity" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="asteroid-risk" data-i18n="asteroid_risk">Nivel de riesgo:</label>
+                                <select id="asteroid-risk" required>
+                                    <option value="bajo" data-i18n="risk_low">Bajo</option>
+                                    <option value="medio" data-i18n="risk_medium">Medio</option>
+                                    <option value="alto" data-i18n="risk_high">Alto</option>
+                                </select>
+                            </div>
+                            <button type="submit" data-i18n="create_button">Crear</button>
+                        </form>
+                    </div>
+                </div>
             </div>
         </div>
-        <!-- Columna Derecha: Crear Asteroide -->
-        <div class="create-asteroid-column">
-            <div class="create-asteroid">
-                <h3>Crear Asteroide Personalizado</h3>
-                <form id="create-asteroid-form">
-                    <div class="form-group">
-                        <label for="asteroid-name">Nombre:</label>
-                        <input type="text" id="asteroid-name" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="asteroid-diameter">Diámetro (m):</label>
-                        <input type="number" id="asteroid-diameter" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="asteroid-velocity">Velocidad (km/s):</label>
-                        <input type="number" id="asteroid-velocity" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="asteroid-risk">Nivel de riesgo:</label>
-                        <select id="asteroid-risk" required>
-                            <option value="bajo">Bajo</option>
-                            <option value="medio">Medio</option>
-                            <option value="alto">Alto</option>
-                        </select>
-                    </div>
-                    <button type="submit">Crear</button>
-                </form>
-            </div>
-        </div>
-    </div>
-</div>
 
         <!-- Vista 3: Simulación de Impacto -->
-<div id="simulation-view" class="view">
-    <div class="simulation-container">
-        <!-- Columna Izquierda: Controles -->
-        <div class="controls-column">
-            <h2>Simulación de Impacto</h2>
-            
-            <div class="control-group">
-                <h3>Seleccionar Asteroide</h3> <br/>
-                <select id="asteroid-select">
-                    <option value="" id="lista">Selecciona un asteroide...</option>
-                </select>
-            </div>
+        <div id="simulation-view" class="view">
+            <div class="simulation-container">
+                <div class="controls-column">
+                    <h2 data-i18n="simulation_title">Simulación de Impacto</h2>
 
-           
-            <button id="run-simulation" disabled>Ejecutar Simulación</button>
-            
-            <div id="simulation-results">
-                <!-- Los resultados aparecerán aquí -->
+                    <div class="control-group">
+                        <h3 data-i18n="select_asteroid">Seleccionar Asteroide</h3> <br/>
+                        <select id="asteroid-select">
+                            <option value="" id="lista" data-i18n="select_asteroid_prompt">Selecciona un asteroide...</option>
+                        </select>
+                    </div>
+
+                    <button id="run-simulation" disabled data-i18n="run_simulation">Ejecutar Simulación</button>
+                    <div id="simulation-results"></div>
+                </div>
+
+                <div class="controls-column">
+                    <div class="control-group">
+                        <h3 data-i18n="select_coordinates">Seleccionar Coordenadas</h3> <br/>
+                        <p data-i18n="select_coords_instruction">Haz clic en el globo o introduce las coordenadas:</p> <br/>
+                        <input type="text" id="lat-input" placeholder="Latitud (Ej: 40.71)" data-i18n="lat_placeholder">
+                        <br/> <br/>
+                        <input type="text" id="lon-input" placeholder="Longitud (Ej: -74.00)" data-i18n="lon_placeholder">
+                        <br/> <br/>
+                        <button id="set-coords-btn" data-i18n="set_coords_button">Usar Coordenadas</button>
+                    </div>
+                </div>
+
+                <div class="canvas-column">
+                    <div id="earth-canvas-simulation"></div>
+                </div>
             </div>
         </div>
-        <div class="controls-column">
-             <div class="control-group">
-                <h3>Seleccionar Coordenadas</h3> <br/>
-                <p>Haz clic en el globo o introduce las coordenadas:</p> <br/>
-                <input type="text" id="lat-input" placeholder="Latitud (Ej: 40.71)"> 
-                <br/> <br/>
-                <input type="text" id="lon-input" placeholder="Longitud (Ej: -74.00)"> 
-                                <br/> <br/>
-                <button id="set-coords-btn">Usar Coordenadas</button>
-            </div>
-            
-        </div>
-        <!-- Columna Derecha: Canvas 3D -->
-        <div class="canvas-column">
-            <div id="earth-canvas-simulation"></div>
-        </div>
-    </div>
-</div>
-        
+
         <!-- Vista 4: Mitigación -->
         <div id="mitigation-view" class="view">
-            <!-- Contenido de mitigación aquí -->
-            <h2>Estrategias de Mitigación</h2>
+            <h2 data-i18n="mitigation_title">Estrategias de Mitigación</h2>
         </div>
     </main>
 
     <footer>
-        <p>2025 Meteor Madness - SpaceLights</p>
+        <p data-i18n="footer_text">2025 Meteor Madness - SpaceLights</p>
     </footer>
 
-    <!-- Scripts (Cargados al final) -->
+    <!-- Scripts -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.min.js"></script>
+    <script src="js/i18n.js"></script>
     <script src="js/api.js"></script>
     <script src="js/visualization.js"></script>
     <script src="js/impact.js"></script>
-    <script src="js/main.js"></script> <!-- main.js al final para que controle todo -->
+    <script src="js/main.js"></script>
 </body>
 </html>

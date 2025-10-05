@@ -89,12 +89,27 @@ function displayAsteroids(asteroids) {
 
 function addAsteroidToListHTML(asteroid) {
     const asteroidsListContainer = document.getElementById('asteroids-list');
+    const lang = window.currentLanguage || localStorage.getItem('language') || 'en';
+    const t = window.translations && window.translations[lang] ? window.translations[lang] : {};
+
     const element = document.createElement('div');
     element.className = 'asteroid-item';
     if (asteroid.is_potentially_hazardous_asteroid || asteroid.riesgo === 'alto') {
         element.classList.add('hazardous');
     }
-    element.innerHTML = `<h3>${asteroid.name} ${asteroid.custom ? '⭐' : (asteroid.is_potentially_hazardous_asteroid ? '⚠️' : '')}</h3><p>Diámetro estimado: ${asteroid.diameter} m</p><p>Velocidad relativa: ${asteroid.velocity} km/s</p><p>Riesgo: ${asteroid.riesgo || 'No evaluado'}</p><button class="simulate-btn" data-name="${asteroid.name}">Simular Impacto</button>`;
+
+    const starOrWarn = asteroid.custom ? '⭐' : (asteroid.is_potentially_hazardous_asteroid ? '⚠️' : '');
+    const diameterLabel = t['label_diameter'] || 'Diameter:';
+    const velocityLabel = t['label_velocity'] || 'Velocity:';
+    const riskLabel = t['label_risk'] || 'Risk:';
+    const simulateLabel = t['label_simulate'] || 'Simulate Impact';
+
+    element.innerHTML = `<h3>${asteroid.name} ${starOrWarn}</h3>
+        <p>${diameterLabel} ${asteroid.diameter} m</p>
+        <p>${velocityLabel} ${asteroid.velocity} km/s</p>
+        <p>${riskLabel} ${asteroid.riesgo || 'No evaluado'}</p>
+        <button class="simulate-btn" data-name="${asteroid.name}">${simulateLabel}</button>`;
+
     element.querySelector('.simulate-btn').addEventListener('click', () => {
         showView('simulation');
         setTimeout(() => {
@@ -114,6 +129,14 @@ async function createCustomAsteroid() {
         riesgo: document.getElementById('asteroid-risk').value,
         custom: true
     };
+    if(asteroidData.diameter<=0){
+        alert('El diámetro debe ser un número positivo.');
+        return;
+    }
+    if(asteroidData.velocity<=0){
+        alert('La velocidad debe ser un número positivo.');
+        return;
+    }
 
     if (!asteroidData.name || isNaN(asteroidData.diameter) || isNaN(asteroidData.velocity)) {
         alert('Por favor, completa todos los campos correctamente.');
@@ -168,3 +191,27 @@ function checkSimulationReady() {
     const locationSelected = window.selectedImpactPoint != null;
     runButton.disabled = !(asteroidSelected && locationSelected);
 }
+
+document.getElementById('lang-en').addEventListener('click', () => {
+    window.currentLanguage = 'en';
+    localStorage.setItem('language', 'en');
+    changeLanguage('en');
+    document.getElementById('lang-en').classList.add('active');
+    document.getElementById('lang-es').classList.remove('active');
+    if (window.asteroidsForSimulation) displayAsteroids(Object.values(window.asteroidsForSimulation));
+    updateImpactInfo(window.selectedAsteroid);
+});
+
+document.getElementById('lang-es').addEventListener('click', () => {
+    window.currentLanguage = 'es';
+    localStorage.setItem('language', 'es');
+    changeLanguage('es');
+    document.getElementById('lang-es').classList.add('active');
+    document.getElementById('lang-en').classList.remove('active');
+    if (window.asteroidsForSimulation) displayAsteroids(Object.values(window.asteroidsForSimulation));
+    updateImpactInfo(window.selectedAsteroid);
+});
+
+
+// Exportar para uso en otros scripts
+window.changeLanguage = changeLanguage;
