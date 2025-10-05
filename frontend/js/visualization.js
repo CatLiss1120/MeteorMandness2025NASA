@@ -42,13 +42,7 @@ function createEarthAndStars() {
     const textureLoader = new THREE.TextureLoader();
     try { textureLoader.crossOrigin = 'anonymous'; } catch(e) { }
 
-    /**
-     * Crea una textura de estrellas dibujando puntos aleatorios en un canvas.
-     * @param {number} width - Ancho del canvas.
-     * @param {number} height - Alto del canvas.
-     * @param {number} starCount - Número de estrellas a dibujar.
-     * @returns {THREE.CanvasTexture} - La textura lista para usar en Three.js.
-     */
+    
     function createProceduralStarTexture(width = 2048, height = 1024, starCount = 1200) {
         const canvas = document.createElement('canvas');
         canvas.width = width;
