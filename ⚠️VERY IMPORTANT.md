@@ -5,7 +5,7 @@
 3. Install backend dependencies:  
    ```bash
    pip install -r requirements.txt
-4. Configure your NASA API keys or use our NASA API key, is in the .env file
+4. Configure your NASA API keys in the .env file
 5. Run the backend server:
     - python backend/app.py
 6. Alternatively, you can run the backend with:
